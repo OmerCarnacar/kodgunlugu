@@ -62,7 +62,7 @@ function videoEkle(container, url, baslik) {
 
 // ---------- Sertifikalar ----------
 const cg = document.getElementById("cert-grid");
-sertifikalar.forEach((s) => {
+if (cg) sertifikalar.forEach((s) => {
   const card = el(s.link ? "a" : "article", "cert-card");
   if (s.link) {
     card.href = s.link;
@@ -80,7 +80,7 @@ sertifikalar.forEach((s) => {
 
 // ---------- Kripto cüzdanlar (Destek & Sponsorluk) ----------
 const cryptoGrid = document.getElementById("crypto-grid");
-kripto.forEach((c) => {
+if (cryptoGrid) kripto.forEach((c) => {
   const card = el("article", "crypto-card");
   card.append(
     el("div", "crypto-code", c.kod),
@@ -195,13 +195,11 @@ const dl = document.getElementById("diary-list");
 const filterBar = document.getElementById("category-filter");
 let aktifKategori = "tumu";
 
-["tumu", ...kategoriler].forEach((k) => {
-  const adet = k === "tumu" ? kayitlar.length : kayitlar.filter((g) => g.kategori === k).length;
-  const btn = el("button", "chip");
-  btn.append(
-    el("span", null, k === "tumu" ? "tümü" : kategoriEtiket(k)),
-    el("span", "chip-count", String(adet))
-  );
+// Sadece içinde kayıt olan kategoriler filtre olarak gösterilir
+const doluKategoriler = kategoriler.filter((k) => kayitlar.some((g) => g.kategori === k));
+
+if (filterBar) ["tumu", ...doluKategoriler].forEach((k) => {
+  const btn = el("button", "chip", k === "tumu" ? "tümü" : kategoriEtiket(k));
   btn.dataset.kategori = k;
   if (k === aktifKategori) btn.classList.add("active");
   btn.addEventListener("click", () => {
@@ -216,7 +214,7 @@ let aktifKategori = "tumu";
 // Konularda arama: başlık, metin, kategori ve tarihte geçen kelimeyi bulur
 const searchInput = document.getElementById("diary-search");
 let arama = "";
-searchInput.addEventListener("input", () => {
+if (searchInput) searchInput.addEventListener("input", () => {
   arama = searchInput.value.trim().toLocaleLowerCase("tr");
   renderDiary();
 });
@@ -228,6 +226,7 @@ function kayitBasligi(g, d) {
 }
 
 function renderDiary() {
+  if (!dl) return; // bu sayfada günlük yok
   dl.replaceChildren();
   navList.replaceChildren();
   let sonAyBaslik = "";
