@@ -95,6 +95,20 @@ code {
 .brand:hover { text-decoration: none; }
 .brand-dot { color: var(--accent); }
 
+.brand-sig {
+  font-family: "Segoe Script", "Brush Script MT", cursive;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  margin-left: -6px;
+  white-space: nowrap;
+  transform: rotate(-2deg);
+  display: inline-block;
+}
+
+@media (max-width: 560px) {
+  .brand-sig { display: none; }
+}
+
 .nav-links {
   display: flex;
   gap: 6px;
