@@ -220,9 +220,70 @@ if (searchInput) searchInput.addEventListener("input", () => {
 });
 
 const navList = document.getElementById("diary-nav-list");
+const popularBox = document.getElementById("popular-box");
+const popularList = document.getElementById("popular-list");
 
 function kayitBasligi(g, d) {
   return g.baslik || `${d.getDate()} ${AYLAR[d.getMonth()]} günlüğü`;
+}
+
+// ---------- Okunma sayacı (bu cihazda) ----------
+// Not: Statik sitede sunucu olmadığı için sayaç tarayıcıda tutulur.
+function kayitKimlik(g) {
+  return g.tarih + "|" + (g.baslik || "");
+}
+function okunmaAl() {
+  try { return JSON.parse(localStorage.getItem("okunma") || "{}"); }
+  catch { return {}; }
+}
+function okunmaArtir(g) {
+  const o = okunmaAl();
+  const k = kayitKimlik(g);
+  o[k] = (o[k] || 0) + 1;
+  localStorage.setItem("okunma", JSON.stringify(o));
+  renderPopular();
+}
+
+// En çok okunan ilk 5 kaydı sol üstte listeler
+function renderPopular() {
+  if (!popularBox) return;
+  const o = okunmaAl();
+  const sirali = kayitlar
+    .map((g) => ({ g, n: o[kayitKimlik(g)] || 0 }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, 5);
+
+  popularList.replaceChildren();
+  if (!sirali.length) { popularBox.hidden = true; return; }
+  popularBox.hidden = false;
+
+  sirali.forEach(({ g, n }) => {
+    const d = parseTarih(g.tarih);
+    const baslik = kayitBasligi(g, d);
+    const li = document.createElement("li");
+    const btn = el("button", "diary-nav-item");
+    btn.append(
+      el("span", "dn-title", `${g.ruh ? g.ruh + " " : ""}${baslik}`),
+      el("span", "dn-date", `${n} okunma · ${kategoriEtiket(g.kategori || "")}`)
+    );
+    btn.addEventListener("click", () => {
+      // Filtre/aramayı sıfırla ki kayıt kesin görünsün
+      aktifKategori = "tumu";
+      if (searchInput) searchInput.value = "";
+      arama = "";
+      if (filterBar) {
+        filterBar.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+        const t = filterBar.querySelector('[data-kategori="tumu"]');
+        if (t) t.classList.add("active");
+      }
+      renderDiary();
+      const hedef = document.getElementById(`kayit-${kayitlar.indexOf(g)}`);
+      if (hedef) { hedef.scrollIntoView({ behavior: "smooth", block: "start" }); hedef.classList.add("open"); }
+    });
+    li.append(btn);
+    popularList.append(li);
+  });
 }
 
 function renderDiary() {
@@ -245,11 +306,11 @@ function renderDiary() {
     return;
   }
 
-  secili.forEach((g, idx) => {
+  secili.forEach((g) => {
     const d = parseTarih(g.tarih);
     const ayBaslik = `${AYLAR[d.getMonth()]} ${d.getFullYear()}`;
     const baslik = kayitBasligi(g, d);
-    const kayitId = `kayit-${idx}`;
+    const kayitId = `kayit-${kayitlar.indexOf(g)}`; // sabit: filtreye göre değişmez
 
     // ---- Sol menü: konu listesi ----
     const li = document.createElement("li");
@@ -261,6 +322,7 @@ function renderDiary() {
     navBtn.addEventListener("click", () => {
       const hedef = document.getElementById(kayitId);
       hedef.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (!hedef.classList.contains("open")) okunmaArtir(g); // ilk açılışta say
       hedef.classList.add("open");
       navList.querySelectorAll(".diary-nav-item").forEach((x) => x.classList.remove("active"));
       navBtn.classList.add("active");
@@ -364,8 +426,10 @@ function renderDiary() {
     });
 
     card.addEventListener("click", () => {
+      const aciliyor = !card.classList.contains("open");
       card.classList.toggle("open");
       more.textContent = card.classList.contains("open") ? "Kapat ↑" : "Devamını oku ↓";
+      if (aciliyor) okunmaArtir(g); // sadece açılışta say
     });
 
     dl.append(card);
@@ -373,6 +437,7 @@ function renderDiary() {
 }
 
 renderDiary();
+renderPopular();
 
 // ---------- Lightbox (fotoğraf büyütme) ----------
 function openLightbox(src, alt) {

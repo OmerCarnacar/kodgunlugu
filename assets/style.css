@@ -710,6 +710,13 @@ a.cert-card .cert-verify { color: var(--accent-2); }
 
 .diary-nav-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
 
+.popular-box {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.popular-box[hidden] { display: none; }
+
 .diary-nav-item {
   display: block;
   width: 100%;
