@@ -6,6 +6,7 @@ echo  KodGunlugu - degisiklikler yayinlaniyor...
 echo.
 git add -A
 git commit -m "site guncellemesi: %date% %time%"
+git push
 echo.
 echo  Cloudflare Pages'e deploy ediliyor...
 echo.
