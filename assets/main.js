@@ -91,6 +91,67 @@ sertifikalar.forEach((s) => {
   cg.append(card);
 });
 
+// ---------- Kod bloğu: metin içinde ```lang ... ``` desteği ----------
+// Basit sözdizimi renklendirme (SQL / C# / JS ortak anahtar kelimeler)
+const KEYWORDS =
+  "SELECT|FROM|WHERE|INSERT|INTO|UPDATE|DELETE|JOIN|INNER|LEFT|RIGHT|OUTER|ON|GROUP|ORDER|BY|HAVING|AS|AND|OR|NOT|NULL|IS|IN|LIKE|CASE|WHEN|THEN|ELSE|END|CREATE|ALTER|DROP|TABLE|VIEW|PROCEDURE|FUNCTION|TRIGGER|INDEX|DECLARE|SET|BEGIN|EXEC|EXECUTE|VALUES|TOP|DISTINCT|UNION|ALL|WITH|IF|ELSE|WHILE|RETURN|PRINT|GETDATE|COUNT|SUM|AVG|MIN|MAX|var|let|const|function|return|if|else|for|while|class|new|async|await|import|export|default|try|catch|throw|typeof|public|private|static|void|string|int|bool|decimal|using|namespace|foreach|this|true|false";
+
+const TOKEN_RE = new RegExp(
+  "(--[^\\n]*|//[^\\n]*|/\\*[\\s\\S]*?\\*/)" + // yorum
+    "|('(?:[^'\\n]|'')*'|\"[^\"\\n]*\")" + // metin
+    "|\\b(\\d+(?:\\.\\d+)?)\\b" + // sayı
+    `|\\b(${KEYWORDS})\\b`, // anahtar kelime
+  "g"
+);
+
+function highlightCode(kod, hedef) {
+  let son = 0, m;
+  TOKEN_RE.lastIndex = 0;
+  while ((m = TOKEN_RE.exec(kod))) {
+    if (m.index > son) hedef.append(kod.slice(son, m.index));
+    const cls = m[1] ? "tok-comment" : m[2] ? "tok-string" : m[3] ? "tok-num" : "tok-kw";
+    hedef.append(el("span", cls, m[0]));
+    son = m.index + m[0].length;
+  }
+  if (son < kod.length) hedef.append(kod.slice(son));
+}
+
+// Metni paragraf + kod bloklarına ayırıp DOM olarak üretir
+function renderMetin(metin, container) {
+  const parcalar = metin.split(/```(\w*)\n?([\s\S]*?)```/g);
+  // split sonucu: [metin, dil, kod, metin, dil, kod, ...]
+  for (let i = 0; i < parcalar.length; i += 3) {
+    const duz = (parcalar[i] || "").trim();
+    if (duz) container.append(el("p", "diary-para", duz));
+
+    if (i + 2 < parcalar.length) {
+      const dil = (parcalar[i + 1] || "kod").toUpperCase();
+      const kod = (parcalar[i + 2] || "").replace(/^\n+|\n+$/g, "");
+
+      const blok = el("div", "code-block");
+      const head = el("div", "code-head");
+      head.append(el("span", "code-lang", dil));
+
+      const btn = el("button", "code-copy", "Kopyala");
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(kod).then(() => {
+          btn.textContent = "✓ Kopyalandı";
+          setTimeout(() => (btn.textContent = "Kopyala"), 1500);
+        });
+      });
+      head.append(btn);
+
+      const pre = document.createElement("pre");
+      const code = document.createElement("code");
+      highlightCode(kod, code);
+      pre.append(code);
+      blok.append(head, pre);
+      container.append(blok);
+    }
+  }
+}
+
 // ---------- Günlük ----------
 const AYLAR = [
   "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
@@ -104,7 +165,8 @@ function parseTarih(t) {
   return new Date(y, m - 1, d);
 }
 
-const kayitlar = [...gunluk].sort((a, b) => (a.tarih < b.tarih ? 1 : -1));
+// Yeni tarih üstte; aynı tarihli kayıtlar data.js'deki sırasını korur
+const kayitlar = [...gunluk].sort((a, b) => (a.tarih < b.tarih ? 1 : a.tarih > b.tarih ? -1 : 0));
 
 // Hero'daki sayaç: toplam kayıt + kaç gündür yazılıyor
 const stats = document.getElementById("diary-stats");
@@ -171,7 +233,8 @@ function renderDiary() {
     if (g.kategori) meta.append(el("span", "tag", g.kategori.toUpperCase()));
     body.append(meta);
 
-    const metin = el("div", "diary-text", g.metin);
+    const metin = el("div", "diary-text");
+    renderMetin(g.metin, metin);
     const more = el("div", "post-more", "Devamını oku ↓");
     body.append(metin);
 

@@ -23,7 +23,7 @@ const BOLUMLER = {
       { k: "kategori", etiket: "Kategori", tip: "select-kategori" },
       { k: "ruh", etiket: "Ruh hâli (bir emoji)", tip: "text", ornek: "✨" },
       { k: "baslik", etiket: "Başlık (isteğe bağlı)", tip: "text" },
-      { k: "metin", etiket: "Metin — paragraf için boş satır bırak", tip: "textarea", zorunlu: true },
+      { k: "metin", etiket: "Metin — paragraf için boş satır; kod için ```sql ... ``` blokları", tip: "textarea", zorunlu: true },
       { k: "resimler", etiket: "Fotoğraflar — img/ klasörüne koy, virgülle ayır", tip: "virgul-listesi", ornek: "img/2026-07-12-kahve.jpg, img/2026-07-12-mac.jpg" },
     ],
     ozet: (x) => `<strong>${esc(x.tarih)}</strong> <span class="dim">· ${esc(x.kategori || "-")} · ${esc(x.baslik || (x.metin || "").slice(0, 50))}</span>`,

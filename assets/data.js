@@ -8,7 +8,17 @@ const kategoriler = ["microsoft", "sql", "erp", "hayat"];
 
 // ---------- GÜNLÜK ----------
 // Her güne bir kayıt. YENİ GÜNÜ LİSTENİN EN ÜSTÜNE EKLE (ya da admin panelini kullan).
+// Metnin içine kod eklemek için üç ters tırnak kullan:  ```sql ... ```
 const gunluk = [
+  {
+    tarih: "2026-07-11",
+    kategori: "sql",
+    ruh: "🗄️",
+    baslik: "Kod paylaşımı örneği",
+    metin:
+      "Artık günlüğe kod da ekleyebiliyorum. Üç ters tırnak arasına yazmak yeterli:\n\n```sql\n-- Bugün en çok kullandığım sorgu\nSELECT TOP 10 t.FICHENO, t.DATE_, c.DEFINITION_\nFROM LG_001_01_INVOICE t\nINNER JOIN LG_001_CLCARD c ON c.LOGICALREF = t.CLIENTREF\nWHERE t.DATE_ = GETDATE()\nORDER BY t.DATE_ DESC;\n```\n\nKod bloğunun sağ üstündeki düğmeyle tek tıkla kopyalanıyor. Bu kaydı kendi notunla değiştirebilirsin.",
+    resimler: [],
+  },
   {
     tarih: "2026-07-11",
     kategori: "hayat",
