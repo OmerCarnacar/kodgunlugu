@@ -11,34 +11,34 @@
   --radius: 16px;
 }
 
-[data-theme="dark"] {
-  --bg: #070709;
-  --bg-soft: #0c0c10;
-  --bg-card: #101016;
-  --text: #ededf2;
-  --text-dim: #83839a;
-  --accent: #8b7cf8;
-  --accent-2: #38e1d4;
-  --accent-soft: rgba(139, 124, 248, 0.12);
-  --border: #1d1d27;
-  --border-hover: #33334a;
-  --shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-  --glow: 0 0 40px rgba(139, 124, 248, 0.18);
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-soft: #faf7f7;
+  --bg-card: #ffffff;
+  --text: #1c1c1e;
+  --text-dim: #6e6e73;
+  --accent: #d62839;
+  --accent-2: #a4161a;
+  --accent-soft: rgba(214, 40, 57, 0.07);
+  --border: #ececec;
+  --border-hover: #d9d9d9;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --glow: 0 4px 16px rgba(214, 40, 57, 0.12);
 }
 
-[data-theme="light"] {
-  --bg: #fafafd;
-  --bg-soft: #f1f1f7;
-  --bg-card: #ffffff;
-  --text: #17171f;
-  --text-dim: #62626f;
-  --accent: #6d5ce6;
-  --accent-2: #0bb8ad;
-  --accent-soft: rgba(109, 92, 230, 0.1);
-  --border: #e4e4ee;
-  --border-hover: #c9c9dd;
-  --shadow: 0 16px 40px rgba(40, 35, 80, 0.1);
-  --glow: 0 0 40px rgba(109, 92, 230, 0.12);
+[data-theme="dark"] {
+  --bg: #121214;
+  --bg-soft: #18181b;
+  --bg-card: #1c1c1f;
+  --text: #ededf0;
+  --text-dim: #8e8e96;
+  --accent: #ff5c6c;
+  --accent-2: #ff8b96;
+  --accent-soft: rgba(255, 92, 108, 0.1);
+  --border: #26262b;
+  --border-hover: #3a3a42;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --glow: 0 8px 24px rgba(255, 92, 108, 0.14);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -323,11 +323,10 @@ code {
 .btn:hover { text-decoration: none; transform: translateY(-2px); }
 
 .btn-primary {
-  background: linear-gradient(120deg, var(--accent), color-mix(in srgb, var(--accent) 55%, var(--accent-2)));
+  background: var(--accent);
   color: #fff;
-  box-shadow: 0 4px 18px var(--accent-soft);
 }
-.btn-primary:hover { box-shadow: var(--glow); }
+.btn-primary:hover { background: var(--accent-2); }
 
 .btn-ghost {
   border: 1px solid var(--border);
@@ -389,7 +388,7 @@ code {
   height: 88px;
   margin: 0 auto 18px;
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: var(--accent);
   color: #fff;
   font-family: var(--font-display);
   font-size: 2.3rem;
@@ -397,7 +396,6 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--glow);
 }
 
 .about-facts {
@@ -435,12 +433,11 @@ code {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: var(--accent);
 }
 .cert-card:hover {
-  transform: translateY(-4px);
   border-color: var(--border-hover);
-  box-shadow: var(--glow);
+  box-shadow: var(--shadow);
   text-decoration: none;
 }
 
@@ -526,9 +523,8 @@ a.cert-card .cert-verify { color: var(--accent-2); }
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .project-card:hover {
-  transform: translateY(-4px);
   border-color: var(--border-hover);
-  box-shadow: var(--glow);
+  box-shadow: var(--shadow);
 }
 
 .project-icon { font-size: 1.7rem; }
@@ -617,11 +613,10 @@ a.cert-card .cert-verify { color: var(--accent-2); }
 }
 .chip:hover { border-color: var(--border-hover); color: var(--text); }
 .chip.active {
-  background: linear-gradient(120deg, var(--accent), color-mix(in srgb, var(--accent) 55%, var(--accent-2)));
-  border-color: transparent;
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
   font-weight: 700;
-  box-shadow: 0 4px 18px var(--accent-soft);
 }
 
 .diary-empty { color: var(--text-dim); font-style: italic; }
@@ -652,10 +647,8 @@ a.cert-card .cert-verify { color: var(--accent-2); }
 .diary-nav {
   position: sticky;
   top: 86px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 14px;
+  border-right: 1px solid var(--border);
+  padding: 4px 14px 4px 0;
   max-height: calc(100vh - 110px);
   overflow-y: auto;
 }
@@ -666,10 +659,9 @@ a.cert-card .cert-verify { color: var(--accent-2); }
   font-weight: 400;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 0 10px 12px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 10px;
+  color: var(--accent);
+  padding: 0 10px 10px;
+  margin-bottom: 6px;
 }
 
 .diary-nav-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
@@ -710,18 +702,16 @@ a.cert-card .cert-verify { color: var(--accent-2); }
   margin-top: 3px;
 }
 
-/* Yazı kartı: büyük başlık üstte, tarih sağda */
+/* Yazı: büyük başlık üstte, tarih sağda — sade liste görünümü */
 .diary-card {
   display: block;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 26px 30px;
+  padding: 26px 4px;
+  border-bottom: 1px solid var(--border);
   cursor: pointer;
   scroll-margin-top: 86px;
-  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.diary-card:hover { border-color: var(--border-hover); box-shadow: var(--shadow); }
+.diary-card:last-child { border-bottom: none; }
+.diary-card:hover .diary-title-big { color: var(--accent); }
 
 .diary-head {
   display: flex;
@@ -742,10 +732,7 @@ a.cert-card .cert-verify { color: var(--accent-2); }
 .diary-date-right {
   flex-shrink: 0;
   text-align: right;
-  padding: 6px 14px;
-  background: var(--accent-soft);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  padding-top: 4px;
 }
 
 .dd-date {
