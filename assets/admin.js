@@ -10,7 +10,6 @@ const state = {
   sertifikalar: JSON.parse(JSON.stringify(sertifikalar)),
   videolar: JSON.parse(JSON.stringify(videolar)),
   projeler: JSON.parse(JSON.stringify(projeler)),
-  cv: JSON.parse(JSON.stringify(cv)),
 };
 
 // Her bölümün form alanları ve liste görünümü
@@ -71,17 +70,6 @@ const BOLUMLER = {
       { k: "link", etiket: "Bağlantı (GitHub vb.)", tip: "text" },
     ],
     ozet: (x) => `<strong>${esc(x.ikon || "")} ${esc(x.ad)}</strong> <span class="dim">· ${esc((x.etiketler || []).join(", "))}</span>`,
-  },
-  cv: {
-    ad: "📄 Özgeçmiş",
-    tekil: "özgeçmiş maddesi",
-    alanlar: [
-      { k: "tarih", etiket: "Dönem", tip: "text", zorunlu: true, ornek: "2024 — Devam" },
-      { k: "baslik", etiket: "Unvan / Bölüm", tip: "text", zorunlu: true },
-      { k: "yer", etiket: "Şirket / Okul", tip: "text" },
-      { k: "aciklama", etiket: "Açıklama", tip: "textarea" },
-    ],
-    ozet: (x) => `<strong>${esc(x.baslik)}</strong> <span class="dim">· ${esc(x.yer || "")} · ${esc(x.tarih)}</span>`,
   },
 };
 
@@ -290,9 +278,6 @@ const videolar = ${j(state.videolar)};
 
 // ---------- KOD / PROJELER ----------
 const projeler = ${j(state.projeler)};
-
-// ---------- ÖZGEÇMİŞ ----------
-const cv = ${j(state.cv)};
 `;
 }
 

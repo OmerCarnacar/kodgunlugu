@@ -26,19 +26,6 @@ function updateToggleIcon() {
   toggle.textContent = document.documentElement.dataset.theme === "dark" ? "☀" : "☾";
 }
 
-// ---------- Özgeçmiş ----------
-const tl = document.getElementById("cv-timeline");
-cv.forEach((item) => {
-  const wrap = el("div", "tl-item");
-  wrap.append(
-    el("div", "tl-date", item.tarih),
-    el("div", "tl-title", item.baslik),
-    el("div", "tl-place", item.yer),
-    el("div", "tl-desc", item.aciklama)
-  );
-  tl.append(wrap);
-});
-
 // ---------- Videolar ----------
 const vg = document.getElementById("video-grid");
 videolar.forEach((v) => {

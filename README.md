@@ -45,7 +45,6 @@ Tüm içerik **`assets/data.js`** dosyasında. Kod bilmene gerek yok, listelere 
 | Günlük kategorisi | `kategoriler` |
 | Video (YouTube ID ile) | `videolar` |
 | Proje | `projeler` |
-| CV maddesi | `cv` |
 
 **Günlük kaydı örneği** — yeni günü listenin _en üstüne_ ekle:
 
@@ -79,7 +78,6 @@ Kategoriler günlüğün üstünde filtre butonu olarak görünür. Yeni kategor
 3. Sayfada küçük görünür, tıklayınca büyür (Esc ya da tıklama ile kapanır).
 
 - **YouTube videosu:** `youtube.com/watch?v=ABC123` adresindeki `ABC123` kısmını `youtubeId` alanına yaz.
-- **CV PDF'i:** dosyanı `cv/ozgecmis.pdf` olarak koy, indirme butonu otomatik çalışır.
 - **Hakkımda metni:** `index.html` içindeki "Hakkımda" bölümünü düzenle.
 - **Sosyal medya bağlantıları:** `index.html` en altındaki footer kısmında.
 
