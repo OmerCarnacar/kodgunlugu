@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Çarnaçar — ister istemez yazıyorum</title>
+  <meta name="description" content="Ömer'in kişisel dünyası: hayat, özgeçmiş, videolar, kod ve şiir. 360 derece ben.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✒️</text></svg>">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="#" class="brand">Çarnaçar<span class="brand-dot">.</span></a>
+      <ul class="nav-links">
+        <li><a href="#gunluk">Günlük</a></li>
+        <li><a href="#hakkimda">Hakkımda</a></li>
+        <li><a href="#ozgecmis">Özgeçmiş</a></li>
+        <li><a href="#sertifikalar">Sertifikalar</a></li>
+        <li><a href="#videolar">Videolar</a></li>
+        <li><a href="#kod">Kod</a></li>
+      </ul>
+      <button id="theme-toggle" class="theme-toggle" title="Tema değiştir" aria-label="Tema değiştir">☾</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero container">
+      <p class="hero-eyebrow">~/carnacar $ git log --daily</p>
+      <h1 class="hero-title">Çarnaçar</h1>
+      <p class="hero-tagline">— her güne bir commit.</p>
+      <p class="hero-desc">
+        Bir programcının günlüğü: Microsoft, SQL ve hayat. Her günün sonunda
+        bir kayıt — bazen kod, bazen sertifika, bazen sadece yaşadıklarım.
+      </p>
+      <div class="hero-stats" id="diary-stats"></div>
+      <div class="hero-actions">
+        <a href="#gunluk" class="btn btn-primary">Günlüğü Oku</a>
+        <a href="#ozgecmis" class="btn btn-ghost">Özgeçmişim</a>
+      </div>
+    </section>
+
+    <!-- ============ GÜNLÜK ============ -->
+    <section id="gunluk" class="section container">
+      <h2 class="section-title"><span class="section-no">01</span> Günlük</h2>
+      <p class="section-desc">Her güne bir kayıt. Yeni gün eklemek için <code>assets/data.js</code> içindeki <code>gunluk</code> listesinin en üstüne bir kayıt ekle.</p>
+      <div id="category-filter" class="filter-bar"></div>
+      <div id="diary-list" class="diary-list"></div>
+    </section>
+
+    <!-- ============ HAKKIMDA ============ -->
+    <section id="hakkimda" class="section container">
+      <h2 class="section-title"><span class="section-no">02</span> Hakkımda</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            Merhaba, ben <strong>Ömer</strong>. Bu site; kim olduğumu, ne yaptığımı ve
+            neler düşündüğümü tek bir çatı altında toplamak için var.
+          </p>
+          <p>
+            Gündüzleri üretiyorum, geceleri yazıyorum. Teknolojiyle uğraşmayı,
+            video çekmeyi ve arada bir şiire sığınmayı seviyorum. "Çarnaçar" hem
+            soyadım hem de hâlim: ister istemez, mecburen — ama severek.
+          </p>
+          <p class="about-note">
+            ✏️ Bu bölümü <code>index.html</code> içinden kendi hikâyenle güncelleyebilirsin.
+          </p>
+        </div>
+        <div class="about-card">
+          <div class="about-avatar">Ö</div>
+          <ul class="about-facts">
+            <li><span>📍</span> Türkiye</li>
+            <li><span>💻</span> Programcı</li>
+            <li><span>🗄️</span> Microsoft &amp; SQL</li>
+            <li><span>🎬</span> Video &amp; içerik üreticisi</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ÖZGEÇMİŞ ============ -->
+    <section id="ozgecmis" class="section container">
+      <h2 class="section-title"><span class="section-no">03</span> Özgeçmiş</h2>
+      <p class="section-desc">Deneyimlerim ve eğitimim. Detaylar <code>assets/data.js</code> dosyasındaki <code>cv</code> listesinde.</p>
+      <div id="cv-timeline" class="timeline"></div>
+      <div class="cv-download">
+        <a class="btn btn-ghost" href="cv/ozgecmis.pdf" download>⬇ PDF olarak indir</a>
+        <span class="hint">(PDF'ini <code>cv/ozgecmis.pdf</code> olarak koyman yeterli)</span>
+      </div>
+    </section>
+
+    <!-- ============ SERTİFİKALAR ============ -->
+    <section id="sertifikalar" class="section container">
+      <h2 class="section-title"><span class="section-no">04</span> Sertifikalar</h2>
+      <p class="section-desc">Microsoft Learn sertifikalarım. Yeni sertifika eklemek için <code>data.js</code> içindeki <code>sertifikalar</code> listesine ekle; doğrulama bağlantısı olarak Microsoft Learn profilindeki "Share" linkini kullanabilirsin.</p>
+      <div id="cert-grid" class="cert-grid"></div>
+    </section>
+
+    <!-- ============ VİDEOLAR ============ -->
+    <section id="videolar" class="section container">
+      <h2 class="section-title"><span class="section-no">05</span> Videolar</h2>
+      <p class="section-desc">Çektiğim ve paylaştığım videolar. Yeni video eklemek için <code>data.js</code> içindeki <code>videolar</code> listesine bir satır ekle.</p>
+      <div id="video-grid" class="video-grid"></div>
+    </section>
+
+    <!-- ============ KOD ============ -->
+    <section id="kod" class="section container">
+      <h2 class="section-title"><span class="section-no">06</span> Kod</h2>
+      <p class="section-desc">Üzerinde çalıştığım projeler ve denemeler.</p>
+      <div id="project-grid" class="project-grid"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-brand">Çarnaçar<span class="brand-dot">.</span></p>
+      <p class="footer-note">ister istemez yazıldı · <span id="year"></span></p>
+      <div class="footer-links">
+        <a href="mailto:omer.carnacar@outlook.com.tr">E-posta</a>
+        <a href="#" title="Kendi bağlantını ekle">YouTube</a>
+        <a href="#" title="Kendi bağlantını ekle">GitHub</a>
+        <a href="#" title="Kendi bağlantını ekle">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/main.js"></script>
+</body>
+</html>
