@@ -15,7 +15,7 @@ const gunluk = [
     ruh: "✨",
     baslik: "İlk kayıt: Günlük başlıyor",
     metin:
-      "Bugün bu günlüğü kurdum. Uzun zamandır aklımdaydı: her günün sonunda birkaç satır yazmak, günü kağıda (ekrana) bırakıp öyle uyumak.\n\nAdı da hazırdı aslında: Çarnaçar. Hem soyadım, hem hâlim. İster istemez, mecburen... ama severek.\n\nHedef basit: her gün bir kayıt. Uzun olması gerekmiyor; bazen tek cümle bile yeter. Bakalım kaç gün üst üste yazabileceğim.",
+      "Bugün bu günlüğü kurdum. Uzun zamandır aklımdaydı: her günün sonunda birkaç satır yazmak, günü kağıda (ekrana) bırakıp öyle uyumak.\n\nHedef basit: her gün bir kayıt. Uzun olması gerekmiyor; bazen tek cümle bile yeter. Bakalım kaç gün üst üste yazabileceğim.",
     resimler: [],
   },
 ];
@@ -109,7 +109,7 @@ const projeler = [
   },
   {
     ikon: "🌐",
-    ad: "Çarnaçar (bu site)",
+    ad: "KodGünlüğü (bu site)",
     aciklama:
       "Sıfır bağımlılıkla yazılmış kişisel günlük ve portfolyo sitem; WordPress benzeri kendi yönetim paneliyle. Saf HTML, CSS ve JavaScript.",
     etiketler: ["HTML", "CSS", "JavaScript"],
