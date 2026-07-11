@@ -20,7 +20,7 @@ Sonra tarayıcıda `http://localhost:4173` adresine git.
 
 1. Panelde değişikliklerini yap.
 2. **"💾 data.js'e Kaydet"** düğmesine bas — ilk seferde `assets/data.js` dosyasını seçmen istenir (Chrome/Edge dosyayı doğrudan diske yazar).
-3. **`yayinla.bat`** dosyasına çift tıkla — değişiklikler git'e commit'lenir, push'lanır ve Cloudflare Pages siteyi 1-2 dakikada günceller.
+3. **`yayinla.bat`** dosyasına çift tıkla — değişiklikler git'e commit'lenir ve doğrudan Cloudflare Pages'e deploy edilir. Site: https://kodgunlugu.pages.dev
 
 Panel internete de çıksa sorun olmaz: yalnızca senin bilgisayarındaki dosyayı yazabilir, ziyaretçiler hiçbir şeyi değiştiremez.
 
