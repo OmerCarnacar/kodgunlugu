@@ -14,7 +14,27 @@ python -m http.server 4173
 
 Sonra tarayıcıda `http://localhost:4173` adresine git.
 
-## İçerik nasıl eklenir?
+## Yönetim paneli (önerilen yol)
+
+**`admin.html`** dosyasını tarayıcıda aç (ya da sitede alt köşedeki "⚙ Yönetim" linkine tıkla). WordPress benzeri panelden günlük kaydı, kategori, sertifika, video, proje ve CV maddesi ekleyip silebilir, düzenleyebilirsin.
+
+1. Panelde değişikliklerini yap.
+2. **"💾 data.js'e Kaydet"** düğmesine bas — ilk seferde `assets/data.js` dosyasını seçmen istenir (Chrome/Edge dosyayı doğrudan diske yazar).
+3. **`yayinla.bat`** dosyasına çift tıkla — değişiklikler git'e commit'lenir, push'lanır ve Cloudflare Pages siteyi 1-2 dakikada günceller.
+
+Panel internete de çıksa sorun olmaz: yalnızca senin bilgisayarındaki dosyayı yazabilir, ziyaretçiler hiçbir şeyi değiştiremez.
+
+## Cloudflare Pages'e yayınlama
+
+1. Depoyu GitHub'a gönder (bir kez): GitHub'da boş depo aç, `git remote add origin <url>` ve `git push -u origin main`.
+2. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages → Create → Pages → Connect to Git** → depoyu seç.
+3. Build ayarları: framework **None**, build komutu **boş**, output directory **/** — kaydet, dağıtım başlar.
+4. Site `https://<proje>.pages.dev` adresinde yayına girer; SSL otomatiktir.
+5. Kendi domain'in için: Pages projesinde **Custom domains → Set up a domain**. Domain Cloudflare'deyse DNS kaydı otomatik açılır, SSL yine otomatik.
+
+Sonraki güncellemeler için tek şey: `yayinla.bat`.
+
+## İçerik nasıl eklenir? (elle, panel kullanmadan)
 
 Tüm içerik **`assets/data.js`** dosyasında. Kod bilmene gerek yok, listelere yeni satır ekle:
 
