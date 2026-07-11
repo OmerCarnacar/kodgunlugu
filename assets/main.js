@@ -177,13 +177,18 @@ if (stats && kayitlar.length) {
   stats.textContent = `${kayitlar.length} kayıt · ${gunSayisi} gündür yazılıyor`;
 }
 
-// Kategori filtresi: "tumu" + data.js'deki kategoriler
+// Kategori filtresi: "tumu" + data.js'deki kategoriler (kayıt sayaçlarıyla)
 const dl = document.getElementById("diary-list");
 const filterBar = document.getElementById("category-filter");
 let aktifKategori = "tumu";
 
 ["tumu", ...kategoriler].forEach((k) => {
-  const btn = el("button", "chip", k === "tumu" ? "tümü" : k.toUpperCase());
+  const adet = k === "tumu" ? kayitlar.length : kayitlar.filter((g) => g.kategori === k).length;
+  const btn = el("button", "chip");
+  btn.append(
+    el("span", null, k === "tumu" ? "tümü" : k.toUpperCase()),
+    el("span", "chip-count", String(adet))
+  );
   btn.dataset.kategori = k;
   if (k === aktifKategori) btn.classList.add("active");
   btn.addEventListener("click", () => {
@@ -193,6 +198,14 @@ let aktifKategori = "tumu";
     renderDiary();
   });
   filterBar.append(btn);
+});
+
+// Konularda arama: başlık, metin, kategori ve tarihte geçen kelimeyi bulur
+const searchInput = document.getElementById("diary-search");
+let arama = "";
+searchInput.addEventListener("input", () => {
+  arama = searchInput.value.trim().toLocaleLowerCase("tr");
+  renderDiary();
 });
 
 const navList = document.getElementById("diary-nav-list");
@@ -206,13 +219,17 @@ function renderDiary() {
   navList.replaceChildren();
   let sonAyBaslik = "";
 
-  const secili =
-    aktifKategori === "tumu"
-      ? kayitlar
-      : kayitlar.filter((g) => g.kategori === aktifKategori);
+  const secili = kayitlar.filter((g) => {
+    if (aktifKategori !== "tumu" && g.kategori !== aktifKategori) return false;
+    if (!arama) return true;
+    return [g.baslik, g.metin, g.kategori, g.tarih]
+      .join(" ")
+      .toLocaleLowerCase("tr")
+      .includes(arama);
+  });
 
   if (!secili.length) {
-    dl.append(el("p", "diary-empty", "Bu kategoride henüz kayıt yok."));
+    dl.append(el("p", "diary-empty", arama ? `"${searchInput.value.trim()}" ile eşleşen kayıt yok.` : "Bu kategoride henüz kayıt yok."));
     return;
   }
 

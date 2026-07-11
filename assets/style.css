@@ -534,11 +534,59 @@ a.cert-card .cert-verify { color: var(--accent-2); }
 .project-link { display: inline-block; margin-top: 14px; font-size: 0.88rem; }
 
 /* ---------- Günlük ---------- */
+.section-first { padding-top: 36px; }
+
+.inline-stats {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-2);
+  letter-spacing: 0.5px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
 .filter-bar {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 28px;
+}
+
+.chip-count {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.chip.active .chip-count { background: rgba(255, 255, 255, 0.22); color: #fff; }
+
+.diary-search {
+  margin-left: auto;
+  min-width: 230px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  padding: 10px 16px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.diary-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.diary-search::placeholder { color: var(--text-dim); }
+
+@media (max-width: 700px) {
+  .diary-search { margin-left: 0; width: 100%; }
 }
 
 .chip {

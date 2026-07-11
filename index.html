@@ -25,57 +25,14 @@
   </header>
 
   <main>
-    <!-- ============ HERO ============ -->
-    <section class="hero container">
-      <div class="hero-bot" aria-hidden="true">
-        <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
-          <!-- anten -->
-          <line class="bot-line" x1="150" y1="38" x2="150" y2="18" />
-          <circle class="bot-antenna" cx="150" cy="14" r="6" />
-          <!-- kafa -->
-          <rect class="bot-metal" x="105" y="38" width="90" height="62" rx="16" />
-          <g class="bot-eyes">
-            <circle class="bot-eye" cx="132" cy="66" r="8" />
-            <circle class="bot-eye" cx="168" cy="66" r="8" />
-          </g>
-          <rect class="bot-mouth" x="138" y="84" width="24" height="5" rx="2.5" />
-          <!-- kulaklar -->
-          <rect class="bot-metal" x="93" y="58" width="12" height="20" rx="5" />
-          <rect class="bot-metal" x="195" y="58" width="12" height="20" rx="5" />
-          <!-- gövde -->
-          <rect class="bot-metal" x="115" y="104" width="70" height="48" rx="14" />
-          <circle class="bot-chest" cx="150" cy="126" r="8" />
-          <!-- laptop ekranı (robota dönük arkası bize) -->
-          <g class="bot-laptop">
-            <rect class="bot-screen" x="88" y="128" width="124" height="52" rx="8" />
-            <g class="bot-code">
-              <rect class="code-line c1" x="100" y="138" height="5" rx="2.5" />
-              <rect class="code-line c2" x="100" y="148" height="5" rx="2.5" />
-              <rect class="code-line c3" x="100" y="158" height="5" rx="2.5" />
-              <rect class="code-line c4" x="100" y="168" height="5" rx="2.5" />
-            </g>
-            <rect class="bot-base" x="76" y="180" width="148" height="10" rx="5" />
-          </g>
-          <!-- yazan kollar -->
-          <rect class="bot-arm arm-left" x="96" y="112" width="14" height="34" rx="7" />
-          <rect class="bot-arm arm-right" x="190" y="112" width="14" height="34" rx="7" />
-        </svg>
-      </div>
-      <p class="hero-eyebrow">SELECT * FROM hayat WHERE tarih = GETDATE();</p>
-      <h1 class="hero-title hero-slogan">Yarın için bugünden<br>başlamak lazım.</h1>
-      <p class="hero-tagline">— bir programcının günlüğü: Microsoft, SQL, ERP ve hayat.</p>
-      <div class="hero-stats" id="diary-stats"></div>
-      <div class="hero-actions">
-        <a href="#gunluk" class="btn btn-primary">Günlüğü Oku</a>
-        <a href="#hakkimda" class="btn btn-ghost">Hakkımda</a>
-      </div>
-    </section>
-
     <!-- ============ GÜNLÜK ============ -->
-    <section id="gunluk" class="section container">
+    <section id="gunluk" class="section section-first container">
       <h2 class="section-title"><span class="section-no">01</span> Günlük</h2>
-      <p class="section-desc">Her güne bir kayıt. Yeni gün eklemek için <code>assets/data.js</code> içindeki <code>gunluk</code> listesinin en üstüne bir kayıt ekle.</p>
-      <div id="category-filter" class="filter-bar"></div>
+      <p class="section-desc">Yarın için bugünden başlamak lazım — her güne bir kayıt. <span id="diary-stats" class="inline-stats"></span></p>
+      <div class="filter-row">
+        <div id="category-filter" class="filter-bar"></div>
+        <input id="diary-search" class="diary-search" type="search" placeholder="🔍 Konularda ara..." autocomplete="off">
+      </div>
       <div class="diary-layout">
         <aside class="diary-nav">
           <h3 class="diary-nav-title">Konular</h3>
