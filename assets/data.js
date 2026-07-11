@@ -1,107 +1,13 @@
 /* ============================================================
    Çarnaçar — İÇERİK DOSYASI
-   Yeni yazı, şiir, video veya proje eklemek için sadece bu
-   dosyayı düzenle. Listelerin en üstüne eklediğin, sitede en
-   önce görünür.
+   admin.html panelinden yönetilir; elle de düzenlenebilir.
    ============================================================ */
 
-// ---------- ÖZGEÇMİŞ ----------
-const cv = [
-  {
-    tarih: "2024 — Devam",
-    baslik: "[Unvanın / Pozisyonun]",
-    yer: "[Şirket / Kurum]",
-    aciklama: "Burada ne yaptığını 1-2 cümleyle anlat.",
-  },
-  {
-    tarih: "2020 — 2024",
-    baslik: "[Önceki Pozisyonun]",
-    yer: "[Önceki Şirket]",
-    aciklama: "Sorumlulukların ve başarıların.",
-  },
-  {
-    tarih: "2016 — 2020",
-    baslik: "[Bölümün] — Lisans",
-    yer: "[Üniversite Adı]",
-    aciklama: "Eğitimin hakkında kısa bir not.",
-  },
-];
-
-// ---------- VİDEOLAR ----------
-// YouTube videosu için: { youtubeId: "VIDEO_ID", baslik: "...", aciklama: "..." }
-// VIDEO_ID, youtube.com/watch?v=XXXXXXX adresindeki XXXXXXX kısmıdır.
-// Henüz video yoksa youtubeId'yi boş bırak, kart yer tutucu olarak görünür.
-const videolar = [
-  {
-    youtubeId: "",
-    baslik: "İlk videom (yakında)",
-    aciklama: "Buraya ilk videonun YouTube ID'sini ekle.",
-  },
-  {
-    youtubeId: "",
-    baslik: "Vlog: Bir günüm",
-    aciklama: "Yer tutucu — kendi videonla değiştir.",
-  },
-];
-
-// ---------- KOD / PROJELER ----------
-const projeler = [
-  {
-    ikon: "🌐",
-    ad: "Çarnaçar (bu site)",
-    aciklama: "Sıfır bağımlılıkla yazılmış kişisel blog ve portfolyo sitem. Saf HTML, CSS ve JavaScript.",
-    etiketler: ["HTML", "CSS", "JavaScript"],
-    link: "",
-  },
-  {
-    ikon: "🛠️",
-    ad: "[Proje Adı]",
-    aciklama: "Projenin ne yaptığını buraya yaz.",
-    etiketler: ["Teknoloji", "Ekle"],
-    link: "",
-  },
-];
-
-// ---------- SERTİFİKALAR (Microsoft Learn) ----------
-//   kod    : sınav/sertifika kodu (örn. "AZ-900", "DP-900", "MS-900")
-//   ad     : sertifikanın tam adı
-//   tarih  : alındığı tarih
-//   link   : Microsoft Learn profilindeki doğrulama (Share) bağlantısı — yoksa "" bırak
-const sertifikalar = [
-  {
-    kod: "AZ-900",
-    ad: "Microsoft Azure Fundamentals",
-    tarih: "[Alındığı tarih]",
-    link: "",
-  },
-  {
-    kod: "DP-900",
-    ad: "Microsoft Azure Data Fundamentals",
-    tarih: "[Alındığı tarih]",
-    link: "",
-  },
-  {
-    kod: "[KOD]",
-    ad: "[Sertifika adı — kendi sertifikanla değiştir]",
-    tarih: "[Tarih]",
-    link: "",
-  },
-];
-
 // ---------- GÜNLÜK KATEGORİLERİ ----------
-// Filtre butonları bu sıraya göre dizilir. Yeni kategori eklemek serbest.
-const kategoriler = ["microsoft", "sql", "hayat"];
+const kategoriler = ["microsoft", "sql", "erp", "hayat"];
 
 // ---------- GÜNLÜK ----------
-// Her güne bir kayıt. YENİ GÜNÜ LİSTENİN EN ÜSTÜNE EKLE.
-//   tarih    : "YYYY-AA-GG" biçiminde (gün adı ve ay otomatik yazılır)
-//   kategori : "microsoft", "sql", "hayat" (yukarıdaki listeden biri)
-//   ruh      : o günün ruh hâlini anlatan bir emoji (isteğe bağlı)
-//   baslik   : güne bir başlık (isteğe bağlı, boş bırakılabilir)
-//   metin    : günün kaydı; paragraf için \n\n kullan
-//   resimler : o günün fotoğrafları (isteğe bağlı).
-//              Fotoğrafı img/ klasörüne kopyala, buraya adını yaz:
-//              resimler: ["img/2026-07-11-kahve.jpg", "img/2026-07-11-gunbatimi.jpg"]
+// Her güne bir kayıt. YENİ GÜNÜ LİSTENİN EN ÜSTÜNE EKLE (ya da admin panelini kullan).
 const gunluk = [
   {
     tarih: "2026-07-11",
@@ -110,24 +16,141 @@ const gunluk = [
     baslik: "İlk kayıt: Günlük başlıyor",
     metin:
       "Bugün bu günlüğü kurdum. Uzun zamandır aklımdaydı: her günün sonunda birkaç satır yazmak, günü kağıda (ekrana) bırakıp öyle uyumak.\n\nAdı da hazırdı aslında: Çarnaçar. Hem soyadım, hem hâlim. İster istemez, mecburen... ama severek.\n\nHedef basit: her gün bir kayıt. Uzun olması gerekmiyor; bazen tek cümle bile yeter. Bakalım kaç gün üst üste yazabileceğim.",
-    resimler: ["img/ornek.svg"],
-  },
-  {
-    tarih: "2026-07-10",
-    kategori: "sql",
-    ruh: "🗄️",
-    baslik: "Örnek: SQL notu",
-    metin:
-      "Bu, örnek bir SQL kaydı — kendi notunla değiştir ya da sil.\n\nBugün öğrendiğim sorguyu, çözdüğüm performans problemini ya da takıldığım hatayı buraya yazabilirim. Kategorisi \"sql\" olduğu için üstteki SQL filtresine tıklayınca sadece bu tür kayıtlar görünür.",
     resimler: [],
   },
+];
+
+// ---------- SERTİFİKALAR (Microsoft Learn) ----------
+const sertifikalar = [
   {
-    tarih: "2026-07-09",
-    kategori: "microsoft",
-    ruh: "📘",
-    baslik: "Örnek: Microsoft notu",
-    metin:
-      "Bu da örnek bir Microsoft kaydı.\n\nAzure'da denediğim bir servis, Microsoft Learn'de bitirdiğim bir modül ya da hazırlandığım sertifika sınavıyla ilgili notlar buraya.",
-    resimler: [],
+    kod: "AB-731",
+    ad: "Microsoft Certified: AI Transformation Leader",
+    tarih: "Haziran 2026 · 979/1000",
+    link: "https://learn.microsoft.com/en-us/users/omercarnacar/credentials",
+  },
+  {
+    kod: "MCT",
+    ad: "Microsoft Certified Trainer",
+    tarih: "2019'dan beri",
+    link: "https://learn.microsoft.com/en-us/users/omercarnacar/",
+  },
+  {
+    kod: "PL-300",
+    ad: "Power BI Data Analyst",
+    tarih: "850/1000",
+    link: "https://learn.microsoft.com/en-us/users/omercarnacar/credentials",
+  },
+  {
+    kod: "MCSE",
+    ad: "Data Management & Analytics",
+    tarih: "2019",
+    link: "",
+  },
+  {
+    kod: "MCSA",
+    ad: "SQL 2016 Database Development",
+    tarih: "2018",
+    link: "",
+  },
+  {
+    kod: "762",
+    ad: "Developing SQL Databases",
+    tarih: "2019",
+    link: "",
+  },
+  {
+    kod: "761",
+    ad: "Querying Data with Transact-SQL",
+    tarih: "2018",
+    link: "",
+  },
+  {
+    kod: "PL/SQL",
+    ad: "Oracle 12c R2 Advanced PL/SQL (Metod)",
+    tarih: "2019",
+    link: "",
+  },
+];
+
+// ---------- VİDEOLAR ----------
+const videolar = [
+  {
+    youtubeId: "",
+    baslik: "İlk videom (yakında)",
+    aciklama: "Buraya ilk videonun YouTube ID'sini ekle.",
+  },
+];
+
+// ---------- KOD / PROJELER ----------
+const projeler = [
+  {
+    ikon: "📧",
+    ad: "Tahsilat E-Posta Sistemi",
+    aciklama:
+      "SQL Server trigger tabanlı otomatik tahsilat bildirimi: HTML makbuz üretimi, bölgesel posta yönlendirme ve hata-güvenli mimari.",
+    etiketler: ["SQL Server", "T-SQL", "HTML"],
+    link: "",
+  },
+  {
+    ikon: "🏦",
+    ad: "Halkbank Toplu Ödeme (DTO) Aracı",
+    aciklama:
+      "C#/WinForms ile LOGO SQL tablolarından resmî Halkbank Excel şablonuna otomatik aktarım yapan toplu ödeme aracı.",
+    etiketler: ["C#", "WinForms", "LOGO Tiger"],
+    link: "",
+  },
+  {
+    ikon: "💸",
+    ad: "Havale Bildirim Sistemi",
+    aciklama:
+      "Node.js + SQL Server ile havale bildirimlerinin otomasyonu ve 6 aylık KPI raporlaması — %78 dijitalleşme oranı.",
+    etiketler: ["Node.js", "SQL Server", "KPI"],
+    link: "",
+  },
+  {
+    ikon: "🌐",
+    ad: "Çarnaçar (bu site)",
+    aciklama:
+      "Sıfır bağımlılıkla yazılmış kişisel günlük ve portfolyo sitem; WordPress benzeri kendi yönetim paneliyle. Saf HTML, CSS ve JavaScript.",
+    etiketler: ["HTML", "CSS", "JavaScript"],
+    link: "",
+  },
+];
+
+// ---------- ÖZGEÇMİŞ ----------
+const cv = [
+  {
+    tarih: "Günümüz",
+    baslik: "LOGO Tiger & Netsis ERP Yöneticisi",
+    yer: "Lila Kozmetik",
+    aciklama:
+      "Çok firmalı ERP yapısının yönetimi; LOGO Tiger üzerinde mali süreçlerin uçtan uca dijitalleştirilmesi. SQL Server, C#/.NET ve Node.js ile kurum içi çözümler.",
+  },
+  {
+    tarih: "2017",
+    baslik: "Veritabanı Yöneticisi (DBA)",
+    yer: "Dimer Group",
+    aciklama:
+      "200+ MSSQL veritabanının yönetimi ve felaket kurtarma: Azure VM Always On, Log Shipping, Data Mirroring; Redgate SQL Monitor ile izleme, dbForge eğiticiliği.",
+  },
+  {
+    tarih: "2013",
+    baslik: "Yazılım Geliştirme + DBA",
+    yer: "Karavil Group",
+    aciklama:
+      "ERP sistem yazılımı geliştirme; MSSQL veritabanı tasarımı, geliştirme ve süreç yönetimi.",
+  },
+  {
+    tarih: "2006",
+    baslik: "Veritabanı Yöneticisi (DBA)",
+    yer: "MTN Yazılım",
+    aciklama:
+      "MSSQL kurulum ve yapılandırma; T-SQL sorgu optimizasyonu; orta ölçekli veritabanı sorunlarının giderilmesi.",
+  },
+  {
+    tarih: "2017",
+    baslik: "Bilgisayar Programlama",
+    yer: "Anadolu Üniversitesi",
+    aciklama: "Ön lisans. Ayrıca Yerel Yönetimler bölümü (2013).",
   },
 ];
