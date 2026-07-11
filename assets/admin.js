@@ -8,6 +8,7 @@ const state = {
   gunluk: JSON.parse(JSON.stringify(gunluk)),
   kategoriler: [...kategoriler],
   sertifikalar: JSON.parse(JSON.stringify(sertifikalar)),
+  kripto: JSON.parse(JSON.stringify(kripto)),
 };
 
 // Her bölümün form alanları ve liste görünümü
@@ -24,6 +25,7 @@ const BOLUMLER = {
       { k: "metin", etiket: "Metin — paragraf için boş satır; kod için ```sql ... ``` blokları", tip: "textarea", zorunlu: true },
       { k: "video", etiket: "Video / yayın linki (YouTube veya Kick)", tip: "text", ornek: "https://www.youtube.com/watch?v=XXXX" },
       { k: "resimler", etiket: "Fotoğraflar — img/ klasörüne koy, virgülle ayır", tip: "virgul-listesi", ornek: "img/2026-07-12-kahve.jpg, img/2026-07-12-mac.jpg" },
+      { k: "ozelKod", etiket: "Özel içerik erişim kodu (boş = herkese açık)", tip: "text", ornek: "vip2026" },
     ],
     ozet: (x) => `<strong>${esc(x.tarih)}</strong> <span class="dim">· ${esc(x.kategori || "-")} · ${esc(x.baslik || (x.metin || "").slice(0, 50))}</span>`,
   },
@@ -47,6 +49,17 @@ const BOLUMLER = {
       { k: "link", etiket: "Doğrulama linki (Learn profili → Share)", tip: "text" },
     ],
     ozet: (x) => `<strong>${esc(x.kod)}</strong> <span class="dim">· ${esc(x.ad)} · ${esc(x.tarih || "")}</span>`,
+  },
+  kripto: {
+    ad: "₿ Kripto Cüzdanlar",
+    tekil: "cüzdan",
+    alanlar: [
+      { k: "kod", etiket: "Sembol", tip: "text", zorunlu: true, ornek: "BTC" },
+      { k: "ad", etiket: "Coin adı", tip: "text", zorunlu: true, ornek: "Bitcoin" },
+      { k: "ag", etiket: "Ağ", tip: "text", ornek: "TRC-20" },
+      { k: "adres", etiket: "Cüzdan adresi", tip: "text", zorunlu: true },
+    ],
+    ozet: (x) => `<strong>${esc(x.kod)}</strong> <span class="dim">· ${esc(x.ag || "")} · ${esc((x.adres || "").slice(0, 24))}...</span>`,
   },
 };
 
@@ -249,6 +262,9 @@ const gunluk = ${j(state.gunluk)};
 
 // ---------- SERTİFİKALAR (Microsoft Learn) ----------
 const sertifikalar = ${j(state.sertifikalar)};
+
+// ---------- KRİPTO CÜZDANLAR (Destek & Sponsorluk) ----------
+const kripto = ${j(state.kripto)};
 `;
 }
 

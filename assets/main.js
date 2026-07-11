@@ -78,6 +78,26 @@ sertifikalar.forEach((s) => {
   cg.append(card);
 });
 
+// ---------- Kripto cüzdanlar (Destek & Sponsorluk) ----------
+const cryptoGrid = document.getElementById("crypto-grid");
+kripto.forEach((c) => {
+  const card = el("article", "crypto-card");
+  card.append(
+    el("div", "crypto-code", c.kod),
+    el("div", "crypto-name", `${c.ad} · ${c.ag}`),
+    el("div", "crypto-addr", c.adres)
+  );
+  const btn = el("button", "code-copy", "Adresi kopyala");
+  btn.addEventListener("click", () => {
+    navigator.clipboard.writeText(c.adres).then(() => {
+      btn.textContent = "✓ Kopyalandı";
+      setTimeout(() => (btn.textContent = "Adresi kopyala"), 1500);
+    });
+  });
+  card.append(btn);
+  cryptoGrid.append(card);
+});
+
 // ---------- Kod bloğu: metin içinde ```lang ... ``` desteği ----------
 // Basit sözdizimi renklendirme (SQL / C# / JS ortak anahtar kelimeler)
 const KEYWORDS =
@@ -275,6 +295,40 @@ function renderDiary() {
       const meta = el("div", "diary-meta");
       meta.append(el("span", "tag", kategoriEtiket(g.kategori)));
       card.append(meta);
+    }
+
+    // ---- Özel içerik: erişim kodu girilene dek kilitli ----
+    const kilitAnahtari = "ozel-" + g.tarih + "-" + (g.baslik || "");
+    const kilitli = g.ozelKod && localStorage.getItem(kilitAnahtari) !== g.ozelKod;
+
+    if (kilitli) {
+      const kutu = el("div", "diary-lock");
+      kutu.append(
+        el("p", "lock-msg", "🔒 Bu kayıt destekçilere özeldir. Erişim kodun varsa gir; yoksa Destek bölümünden kripto ile destek olup e-postayla kodunu iste.")
+      );
+      const satir = el("div", "lock-row");
+      const inp = document.createElement("input");
+      inp.type = "password";
+      inp.placeholder = "Erişim kodu";
+      inp.className = "lock-input";
+      const ac = el("button", "lock-btn", "Aç");
+      const dene = () => {
+        if (inp.value.trim() === g.ozelKod) {
+          localStorage.setItem(kilitAnahtari, g.ozelKod);
+          renderDiary();
+        } else {
+          inp.value = "";
+          inp.placeholder = "Kod yanlış, tekrar dene";
+        }
+      };
+      ac.addEventListener("click", dene);
+      inp.addEventListener("keydown", (e) => { if (e.key === "Enter") dene(); });
+      satir.append(inp, ac);
+      kutu.append(satir);
+      kutu.addEventListener("click", (e) => e.stopPropagation());
+      card.append(kutu);
+      dl.append(card);
+      return; // metin, video ve fotoğraflar gizli kalır
     }
 
     const metin = el("div", "diary-text");

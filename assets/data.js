@@ -4,7 +4,15 @@
    ============================================================ */
 
 // ---------- GÜNLÜK KATEGORİLERİ ----------
-const kategoriler = ["microsoft", "sql", "erp", "video", "yayın", "hayat"];
+const kategoriler = ["microsoft", "sql", "erp", "video", "yayın", "etkinlik", "sponsorluk", "makale", "hayat"];
+
+// ---------- KRİPTO CÜZDANLAR (Destek & Sponsorluk) ----------
+// Adres alanlarına kendi cüzdan adreslerini yaz (admin panelinden de düzenlenir).
+const kripto = [
+  { kod: "BTC", ad: "Bitcoin", ag: "Bitcoin ağı", adres: "buraya-btc-adresini-yapistir" },
+  { kod: "ETH", ad: "Ethereum", ag: "ERC-20", adres: "buraya-eth-adresini-yapistir" },
+  { kod: "USDT", ad: "Tether", ag: "TRC-20", adres: "buraya-usdt-adresini-yapistir" },
+];
 
 // ---------- GÜNLÜK ----------
 // Her güne bir kayıt. YENİ GÜNÜ LİSTENİN EN ÜSTÜNE EKLE (ya da admin panelini kullan).
@@ -12,7 +20,20 @@ const kategoriler = ["microsoft", "sql", "erp", "video", "yayın", "hayat"];
 // Video/yayın gömmek için "video" alanına linki yapıştır:
 //   YouTube : https://www.youtube.com/watch?v=XXXX  (youtu.be ve canlı yayın linkleri de olur)
 //   Kick    : https://kick.com/kanaladi
+// ÖZEL İÇERİK: "ozelKod" alanına bir erişim kodu yazarsan kayıt kilitli görünür;
+// kodu sadece destek olanlara ver. Boş "" bırakılırsa herkese açıktır.
 const gunluk = [
+  {
+    tarih: "2026-07-11",
+    kategori: "makale",
+    ruh: "🔒",
+    baslik: "Özel içerik örneği: Derinlemesine SQL notlarım",
+    metin:
+      "Bu kayıt özel içerik örneğidir — erişim kodunu girenler okuyabilir.\n\nBuraya destekçilere özel makale, video ya da notlarını yazarsın. Örnek kodu: vip2026",
+    video: "",
+    resimler: [],
+    ozelKod: "vip2026",
+  },
   {
     tarih: "2026-07-11",
     kategori: "video",
