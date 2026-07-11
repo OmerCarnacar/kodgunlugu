@@ -80,7 +80,13 @@
       <h2 class="section-title"><span class="section-no">01</span> Günlük</h2>
       <p class="section-desc">Her güne bir kayıt. Yeni gün eklemek için <code>assets/data.js</code> içindeki <code>gunluk</code> listesinin en üstüne bir kayıt ekle.</p>
       <div id="category-filter" class="filter-bar"></div>
-      <div id="diary-list" class="diary-list"></div>
+      <div class="diary-layout">
+        <aside class="diary-nav">
+          <h3 class="diary-nav-title">Konular</h3>
+          <ul id="diary-nav-list" class="diary-nav-list"></ul>
+        </aside>
+        <div id="diary-list" class="diary-list"></div>
+      </div>
     </section>
 
     <!-- ============ HAKKIMDA ============ -->

@@ -195,8 +195,15 @@ let aktifKategori = "tumu";
   filterBar.append(btn);
 });
 
+const navList = document.getElementById("diary-nav-list");
+
+function kayitBasligi(g, d) {
+  return g.baslik || `${d.getDate()} ${AYLAR[d.getMonth()]} günlüğü`;
+}
+
 function renderDiary() {
   dl.replaceChildren();
+  navList.replaceChildren();
   let sonAyBaslik = "";
 
   const secili =
@@ -209,34 +216,61 @@ function renderDiary() {
     return;
   }
 
-  secili.forEach((g) => {
+  secili.forEach((g, idx) => {
     const d = parseTarih(g.tarih);
     const ayBaslik = `${AYLAR[d.getMonth()]} ${d.getFullYear()}`;
+    const baslik = kayitBasligi(g, d);
+    const kayitId = `kayit-${idx}`;
 
+    // ---- Sol menü: konu listesi ----
+    const li = document.createElement("li");
+    const navBtn = el("button", "diary-nav-item");
+    navBtn.append(
+      el("span", "dn-title", `${g.ruh ? g.ruh + " " : ""}${baslik}`),
+      el("span", "dn-date", `${d.getDate()} ${AYLAR[d.getMonth()]} · ${g.kategori || ""}`)
+    );
+    navBtn.addEventListener("click", () => {
+      const hedef = document.getElementById(kayitId);
+      hedef.scrollIntoView({ behavior: "smooth", block: "start" });
+      hedef.classList.add("open");
+      navList.querySelectorAll(".diary-nav-item").forEach((x) => x.classList.remove("active"));
+      navBtn.classList.add("active");
+    });
+    li.append(navBtn);
+    navList.append(li);
+
+    // ---- Sağ: blog yazısı ----
     if (ayBaslik !== sonAyBaslik) {
       dl.append(el("h3", "diary-month", ayBaslik));
       sonAyBaslik = ayBaslik;
     }
 
     const card = el("article", "diary-card");
+    card.id = kayitId;
 
-    const dateBox = el("div", "diary-date");
+    const head = el("header", "diary-head");
+    const h = el("h3", "diary-title-big");
+    if (g.ruh) h.append(el("span", "diary-mood", g.ruh + " "));
+    h.append(document.createTextNode(baslik));
+
+    const dateBox = el("div", "diary-date-right");
     dateBox.append(
-      el("div", "diary-day", String(d.getDate())),
-      el("div", "diary-weekday", GUNLER[d.getDay()])
+      el("div", "dd-date", `${d.getDate()} ${AYLAR[d.getMonth()]} ${d.getFullYear()}`),
+      el("div", "dd-day", GUNLER[d.getDay()])
     );
+    head.append(h, dateBox);
+    card.append(head);
 
-    const body = el("div", "diary-body");
-    const meta = el("div", "diary-meta");
-    if (g.ruh) meta.append(el("span", "diary-mood", g.ruh));
-    if (g.baslik) meta.append(el("h4", "diary-title", g.baslik));
-    if (g.kategori) meta.append(el("span", "tag", g.kategori.toUpperCase()));
-    body.append(meta);
+    if (g.kategori) {
+      const meta = el("div", "diary-meta");
+      meta.append(el("span", "tag", g.kategori.toUpperCase()));
+      card.append(meta);
+    }
 
     const metin = el("div", "diary-text");
     renderMetin(g.metin, metin);
     const more = el("div", "post-more", "Devamını oku ↓");
-    body.append(metin);
+    card.append(metin);
 
     // Günün fotoğrafları — tıklayınca büyür
     if (g.resimler && g.resimler.length) {
@@ -245,7 +279,7 @@ function renderDiary() {
         const img = document.createElement("img");
         img.className = "diary-photo";
         img.src = src;
-        img.alt = g.baslik || g.tarih;
+        img.alt = baslik;
         img.loading = "lazy";
         img.addEventListener("click", (e) => {
           e.stopPropagation(); // kartın aç/kapa davranışını tetiklemesin
@@ -253,12 +287,10 @@ function renderDiary() {
         });
         photos.append(img);
       });
-      body.append(photos);
+      card.append(photos);
     }
 
-    body.append(more);
-
-    card.append(dateBox, body);
+    card.append(more);
 
     // Kısa kayıtlar zaten tam görünür; uzunlar tıklayınca açılır.
     requestAnimationFrame(() => {
