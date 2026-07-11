@@ -466,72 +466,34 @@ code {
 .cert-verify { font-size: 0.82rem; color: var(--text-dim); margin-top: 12px; }
 a.cert-card .cert-verify { color: var(--accent-2); }
 
-/* ---------- Videolar ---------- */
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
-}
-
-.video-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+/* ---------- Video / canlı yayın gömme ---------- */
+.diary-video {
+  margin: 14px 0;
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-}
-.video-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow);
-  border-color: var(--border-hover);
-}
-
-.video-frame {
-  aspect-ratio: 16 / 9;
-  width: 100%;
-  border: none;
-  display: block;
-  background: var(--bg-soft);
-}
-
-.video-placeholder {
-  aspect-ratio: 16 / 9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-soft);
-  color: var(--text-dim);
-  font-size: 2.4rem;
-}
-
-.video-body { padding: 16px 18px; }
-.video-title { font-weight: 700; font-size: 1rem; }
-.video-desc { color: var(--text-dim); font-size: 0.88rem; margin-top: 5px; }
-
-/* ---------- Kod / Projeler ---------- */
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-}
-
-.project-card {
-  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-}
-.project-card:hover {
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow);
+  background: #000;
 }
 
-.project-icon { font-size: 1.7rem; }
-.project-name { font-weight: 700; font-size: 1.05rem; margin: 10px 0 6px; }
-.project-desc { color: var(--text-dim); font-size: 0.92rem; }
+.diary-video iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+}
 
-.project-tags { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.diary-video-link {
+  display: inline-block;
+  margin: 12px 0;
+  padding: 10px 20px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.diary-video-link:hover { background: var(--accent); color: #fff; text-decoration: none; }
+
 .tag {
   font-family: var(--font-mono);
   font-size: 0.72rem;

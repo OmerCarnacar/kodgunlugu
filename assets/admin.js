@@ -8,8 +8,6 @@ const state = {
   gunluk: JSON.parse(JSON.stringify(gunluk)),
   kategoriler: [...kategoriler],
   sertifikalar: JSON.parse(JSON.stringify(sertifikalar)),
-  videolar: JSON.parse(JSON.stringify(videolar)),
-  projeler: JSON.parse(JSON.stringify(projeler)),
 };
 
 // Her bölümün form alanları ve liste görünümü
@@ -24,6 +22,7 @@ const BOLUMLER = {
       { k: "ruh", etiket: "Ruh hâli (bir emoji)", tip: "text", ornek: "✨" },
       { k: "baslik", etiket: "Başlık (isteğe bağlı)", tip: "text" },
       { k: "metin", etiket: "Metin — paragraf için boş satır; kod için ```sql ... ``` blokları", tip: "textarea", zorunlu: true },
+      { k: "video", etiket: "Video / yayın linki (YouTube veya Kick)", tip: "text", ornek: "https://www.youtube.com/watch?v=XXXX" },
       { k: "resimler", etiket: "Fotoğraflar — img/ klasörüne koy, virgülle ayır", tip: "virgul-listesi", ornek: "img/2026-07-12-kahve.jpg, img/2026-07-12-mac.jpg" },
     ],
     ozet: (x) => `<strong>${esc(x.tarih)}</strong> <span class="dim">· ${esc(x.kategori || "-")} · ${esc(x.baslik || (x.metin || "").slice(0, 50))}</span>`,
@@ -35,7 +34,7 @@ const BOLUMLER = {
     metinListesi: true, // öğeler nesne değil, düz metin
     ozet: (x) => {
       const adet = state.gunluk.filter((g) => g.kategori === x).length;
-      return `<strong>${esc(x.toUpperCase())}</strong> <span class="dim">· ${adet} kayıt</span>`;
+      return `<strong>${esc(x.toLocaleUpperCase("tr"))}</strong> <span class="dim">· ${adet} kayıt</span>`;
     },
   },
   sertifikalar: {
@@ -48,28 +47,6 @@ const BOLUMLER = {
       { k: "link", etiket: "Doğrulama linki (Learn profili → Share)", tip: "text" },
     ],
     ozet: (x) => `<strong>${esc(x.kod)}</strong> <span class="dim">· ${esc(x.ad)} · ${esc(x.tarih || "")}</span>`,
-  },
-  videolar: {
-    ad: "🎬 Videolar",
-    tekil: "video",
-    alanlar: [
-      { k: "youtubeId", etiket: "YouTube ID (watch?v= sonrası)", tip: "text", ornek: "dQw4w9WgXcQ" },
-      { k: "baslik", etiket: "Başlık", tip: "text", zorunlu: true },
-      { k: "aciklama", etiket: "Açıklama", tip: "text" },
-    ],
-    ozet: (x) => `<strong>${esc(x.baslik)}</strong> <span class="dim">· ${x.youtubeId ? esc(x.youtubeId) : "ID yok"}</span>`,
-  },
-  projeler: {
-    ad: "💻 Projeler",
-    tekil: "proje",
-    alanlar: [
-      { k: "ikon", etiket: "İkon (bir emoji)", tip: "text", ornek: "🛠️" },
-      { k: "ad", etiket: "Proje adı", tip: "text", zorunlu: true },
-      { k: "aciklama", etiket: "Açıklama", tip: "textarea" },
-      { k: "etiketler", etiket: "Etiketler (virgülle)", tip: "virgul-listesi", ornek: "C#, SQL Server" },
-      { k: "link", etiket: "Bağlantı (GitHub vb.)", tip: "text" },
-    ],
-    ozet: (x) => `<strong>${esc(x.ikon || "")} ${esc(x.ad)}</strong> <span class="dim">· ${esc((x.etiketler || []).join(", "))}</span>`,
   },
 };
 
@@ -122,7 +99,7 @@ function renderForm(deger) {
       state.kategoriler.forEach((k) => {
         const opt = document.createElement("option");
         opt.value = k;
-        opt.textContent = k.toUpperCase();
+        opt.textContent = k.toLocaleUpperCase("tr");
         input.append(opt);
       });
     } else {
@@ -272,12 +249,6 @@ const gunluk = ${j(state.gunluk)};
 
 // ---------- SERTİFİKALAR (Microsoft Learn) ----------
 const sertifikalar = ${j(state.sertifikalar)};
-
-// ---------- VİDEOLAR ----------
-const videolar = ${j(state.videolar)};
-
-// ---------- KOD / PROJELER ----------
-const projeler = ${j(state.projeler)};
 `;
 }
 

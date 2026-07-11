@@ -26,52 +26,39 @@ function updateToggleIcon() {
   toggle.textContent = document.documentElement.dataset.theme === "dark" ? "☀" : "☾";
 }
 
-// ---------- Videolar ----------
-const vg = document.getElementById("video-grid");
-videolar.forEach((v) => {
-  const card = el("article", "video-card");
+// ---------- Video / canlı yayın gömme ----------
+// YouTube (watch, youtu.be, live, shorts) ve Kick linklerini oynatıcıya çevirir.
+function videoEmbedUrl(url) {
+  let m = url.match(/(?:youtube\.com\/(?:watch\?v=|live\/|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,})/);
+  if (m) return "https://www.youtube-nocookie.com/embed/" + m[1];
+  m = url.match(/kick\.com\/([\w-]+)/);
+  if (m) return "https://player.kick.com/" + m[1];
+  return null;
+}
 
-  if (v.youtubeId) {
+function videoEkle(container, url, baslik) {
+  const embed = videoEmbedUrl(url);
+  if (embed) {
+    const wrap = el("div", "diary-video");
     const frame = document.createElement("iframe");
-    frame.className = "video-frame";
-    frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(v.youtubeId);
-    frame.title = v.baslik;
+    frame.src = embed;
+    frame.title = baslik;
     frame.allowFullscreen = true;
     frame.loading = "lazy";
-    card.append(frame);
+    frame.setAttribute("allow", "autoplay; fullscreen; picture-in-picture");
+    wrap.append(frame);
+    wrap.addEventListener("click", (e) => e.stopPropagation());
+    container.append(wrap);
   } else {
-    card.append(el("div", "video-placeholder", "🎬"));
-  }
-
-  const body = el("div", "video-body");
-  body.append(el("div", "video-title", v.baslik), el("div", "video-desc", v.aciklama));
-  card.append(body);
-  vg.append(card);
-});
-
-// ---------- Projeler ----------
-const pg = document.getElementById("project-grid");
-projeler.forEach((p) => {
-  const card = el("article", "project-card");
-  card.append(
-    el("div", "project-icon", p.ikon),
-    el("div", "project-name", p.ad),
-    el("div", "project-desc", p.aciklama)
-  );
-
-  const tags = el("div", "project-tags");
-  p.etiketler.forEach((t) => tags.append(el("span", "tag", t)));
-  card.append(tags);
-
-  if (p.link) {
-    const a = el("a", "project-link", "Projeye git →");
-    a.href = p.link;
+    // Tanınmayan platform: bağlantı düğmesi göster
+    const a = el("a", "diary-video-link", "▶ Yayını / videoyu izle ↗");
+    a.href = url;
     a.target = "_blank";
     a.rel = "noopener";
-    card.append(a);
+    a.addEventListener("click", (e) => e.stopPropagation());
+    container.append(a);
   }
-  pg.append(card);
-});
+}
 
 // ---------- Sertifikalar ----------
 const cg = document.getElementById("cert-grid");
@@ -125,7 +112,7 @@ function renderMetin(metin, container) {
     if (duz) container.append(el("p", "diary-para", duz));
 
     if (i + 2 < parcalar.length) {
-      const dil = (parcalar[i + 1] || "kod").toUpperCase();
+      const dil = (parcalar[i + 1] || "kod").toLocaleUpperCase("tr");
       const kod = (parcalar[i + 2] || "").replace(/^\n+|\n+$/g, "");
 
       const blok = el("div", "code-block");
@@ -177,6 +164,12 @@ if (stats && kayitlar.length) {
   stats.textContent = `${kayitlar.length} kayıt · ${gunSayisi} gündür yazılıyor`;
 }
 
+// Kategori adını büyük harfe çevirir (marka adları Türkçe İ kuralından muaf)
+const MARKA_ADLARI = { microsoft: "MICROSOFT", kick: "KICK", twitch: "TWITCH", github: "GITHUB" };
+function kategoriEtiket(k) {
+  return MARKA_ADLARI[k] || k.toLocaleUpperCase("tr");
+}
+
 // Kategori filtresi: "tumu" + data.js'deki kategoriler (kayıt sayaçlarıyla)
 const dl = document.getElementById("diary-list");
 const filterBar = document.getElementById("category-filter");
@@ -186,7 +179,7 @@ let aktifKategori = "tumu";
   const adet = k === "tumu" ? kayitlar.length : kayitlar.filter((g) => g.kategori === k).length;
   const btn = el("button", "chip");
   btn.append(
-    el("span", null, k === "tumu" ? "tümü" : k.toUpperCase()),
+    el("span", null, k === "tumu" ? "tümü" : kategoriEtiket(k)),
     el("span", "chip-count", String(adet))
   );
   btn.dataset.kategori = k;
@@ -280,7 +273,7 @@ function renderDiary() {
 
     if (g.kategori) {
       const meta = el("div", "diary-meta");
-      meta.append(el("span", "tag", g.kategori.toUpperCase()));
+      meta.append(el("span", "tag", kategoriEtiket(g.kategori)));
       card.append(meta);
     }
 
@@ -288,6 +281,9 @@ function renderDiary() {
     renderMetin(g.metin, metin);
     const more = el("div", "post-more", "Devamını oku ↓");
     card.append(metin);
+
+    // Video / canlı yayın
+    if (g.video) videoEkle(card, g.video, baslik);
 
     // Günün fotoğrafları — tıklayınca büyür
     if (g.resimler && g.resimler.length) {

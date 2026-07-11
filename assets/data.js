@@ -4,12 +4,25 @@
    ============================================================ */
 
 // ---------- GÜNLÜK KATEGORİLERİ ----------
-const kategoriler = ["microsoft", "sql", "erp", "hayat"];
+const kategoriler = ["microsoft", "sql", "erp", "video", "yayın", "hayat"];
 
 // ---------- GÜNLÜK ----------
 // Her güne bir kayıt. YENİ GÜNÜ LİSTENİN EN ÜSTÜNE EKLE (ya da admin panelini kullan).
 // Metnin içine kod eklemek için üç ters tırnak kullan:  ```sql ... ```
+// Video/yayın gömmek için "video" alanına linki yapıştır:
+//   YouTube : https://www.youtube.com/watch?v=XXXX  (youtu.be ve canlı yayın linkleri de olur)
+//   Kick    : https://kick.com/kanaladi
 const gunluk = [
+  {
+    tarih: "2026-07-11",
+    kategori: "video",
+    ruh: "🎬",
+    baslik: "Video paylaşımı örneği",
+    metin:
+      "Video ve canlı yayınlar artık günlüğün içinde. Kayda YouTube ya da Kick linki eklemek yeterli — oynatıcı gömülü gelir.\n\nBu örnek kaydı kendi videonla değiştir: admin panelinde \"Video / yayın linki\" alanına linki yapıştırman yeterli.",
+    video: "",
+    resimler: [],
+  },
   {
     tarih: "2026-07-11",
     kategori: "sql",
@@ -82,48 +95,4 @@ const sertifikalar = [
   },
 ];
 
-// ---------- VİDEOLAR ----------
-const videolar = [
-  {
-    youtubeId: "",
-    baslik: "İlk videom (yakında)",
-    aciklama: "Buraya ilk videonun YouTube ID'sini ekle.",
-  },
-];
-
-// ---------- KOD / PROJELER ----------
-const projeler = [
-  {
-    ikon: "📧",
-    ad: "Tahsilat E-Posta Sistemi",
-    aciklama:
-      "SQL Server trigger tabanlı otomatik tahsilat bildirimi: HTML makbuz üretimi, bölgesel posta yönlendirme ve hata-güvenli mimari.",
-    etiketler: ["SQL Server", "T-SQL", "HTML"],
-    link: "",
-  },
-  {
-    ikon: "🏦",
-    ad: "Halkbank Toplu Ödeme (DTO) Aracı",
-    aciklama:
-      "C#/WinForms ile LOGO SQL tablolarından resmî Halkbank Excel şablonuna otomatik aktarım yapan toplu ödeme aracı.",
-    etiketler: ["C#", "WinForms", "LOGO Tiger"],
-    link: "",
-  },
-  {
-    ikon: "💸",
-    ad: "Havale Bildirim Sistemi",
-    aciklama:
-      "Node.js + SQL Server ile havale bildirimlerinin otomasyonu ve 6 aylık KPI raporlaması — %78 dijitalleşme oranı.",
-    etiketler: ["Node.js", "SQL Server", "KPI"],
-    link: "",
-  },
-  {
-    ikon: "🌐",
-    ad: "KodGünlüğü (bu site)",
-    aciklama:
-      "Sıfır bağımlılıkla yazılmış kişisel günlük ve portfolyo sitem; WordPress benzeri kendi yönetim paneliyle. Saf HTML, CSS ve JavaScript.",
-    etiketler: ["HTML", "CSS", "JavaScript"],
-    link: "",
-  },
-];
 
