@@ -677,6 +677,23 @@ a.cert-card .cert-verify { color: var(--accent-2); }
 
 .diary-empty { color: var(--text-dim); font-style: italic; }
 
+/* Liste özeti ve içerik göstergeleri */
+.diary-excerpt {
+  color: var(--text-dim);
+  font-size: 0.93rem;
+  line-height: 1.6;
+}
+
+.diary-badges {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+/* Arşiv */
+.arsiv-baslik { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.arsiv-item.active { background: var(--accent-soft); border-left-color: var(--accent); }
+
 /* Detay (ana içerik) görünümü */
 .back-btn {
   display: inline-flex;

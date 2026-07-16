@@ -213,6 +213,7 @@ const dl = document.getElementById("diary-list");
 const filterBar = document.getElementById("category-filter");
 let aktifKategori = "tumu";
 let aktifKayit = null; // null = liste; sayı = detayda gösterilen kaydın sırası
+let aktifAy = null; // "2026-07" gibi; null = tüm aylar
 
 // Sadece içinde kayıt olan kategoriler filtre olarak gösterilir
 const doluKategoriler = kategoriler.filter((k) => kayitlar.some((g) => g.kategori === k));
@@ -335,12 +336,15 @@ function renderDiary() {
 
   const secili = kayitlar.filter((g) => {
     if (aktifKategori !== "tumu" && g.kategori !== aktifKategori) return false;
+    if (aktifAy && !g.tarih.startsWith(aktifAy)) return false;
     if (!arama) return true;
     return [g.baslik, g.metin, g.kategori, g.tarih]
       .join(" ")
       .toLocaleLowerCase("tr")
       .includes(arama);
   });
+
+  renderArchive();
 
   if (!secili.length) {
     dl.append(el("p", "diary-empty", arama ? `"${searchInput.value.trim()}" ile eşleşen kayıt yok.` : "Bu kategoride henüz kayıt yok."));
@@ -410,6 +414,38 @@ function renderDiary() {
     }
 
     dl.append(kartOlustur(g, false));
+  });
+}
+
+// ---------- Ay bazlı arşiv (sol menü) ----------
+const archiveList = document.getElementById("archive-list");
+
+function renderArchive() {
+  if (!archiveList) return;
+  archiveList.replaceChildren();
+
+  // Ayları topla: { "2026-07": adet }
+  const aylar = {};
+  kayitlar.forEach((g) => {
+    const ay = g.tarih.slice(0, 7);
+    aylar[ay] = (aylar[ay] || 0) + 1;
+  });
+
+  Object.keys(aylar).sort().reverse().forEach((ay) => {
+    const [y, m] = ay.split("-").map(Number);
+    const li = document.createElement("li");
+    const btn = el("button", "diary-nav-item arsiv-item" + (aktifAy === ay ? " active" : ""));
+    btn.append(
+      el("span", "dn-title", `${AYLAR[m - 1]} ${y}`),
+      el("span", "dn-date", `${aylar[ay]} kayıt${aktifAy === ay ? " · filtre açık ✕" : ""}`)
+    );
+    btn.addEventListener("click", () => {
+      aktifAy = aktifAy === ay ? null : ay; // aynı aya tekrar tıkla → filtreyi kaldır
+      aktifKayit = null;
+      renderDiary();
+    });
+    li.append(btn);
+    archiveList.append(li);
   });
 }
 
@@ -489,37 +525,51 @@ function kartOlustur(g, detay) {
     return card; // metin, video ve fotoğraflar gizli kalır
   }
 
-  const metin = el("div", "diary-text");
-  renderMetin(g.metin, metin);
-  card.append(metin);
+  if (detay) {
+    // Tam içerik: metin, video, fotoğraflar
+    const metin = el("div", "diary-text");
+    renderMetin(g.metin, metin);
+    card.append(metin);
 
-  // Video / canlı yayın
-  if (g.video) videoEkle(card, g.video, baslik);
+    if (g.video) videoEkle(card, g.video, baslik);
 
-  // Günün fotoğrafları — tıklayınca büyür
-  if (g.resimler && g.resimler.length) {
-    const photos = el("div", "diary-photos");
-    g.resimler.forEach((src) => {
-      const img = document.createElement("img");
-      img.className = "diary-photo";
-      img.src = src;
-      img.alt = baslik;
-      img.loading = "lazy";
-      img.addEventListener("click", (e) => {
-        e.stopPropagation(); // kartın tıklamasını tetiklemesin
-        openLightbox(src, img.alt);
+    if (g.resimler && g.resimler.length) {
+      const photos = el("div", "diary-photos");
+      g.resimler.forEach((src) => {
+        const img = document.createElement("img");
+        img.className = "diary-photo";
+        img.src = src;
+        img.alt = baslik;
+        img.loading = "lazy";
+        img.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openLightbox(src, img.alt);
+        });
+        photos.append(img);
       });
-      photos.append(img);
-    });
-    card.append(photos);
-  }
+      card.append(photos);
+    }
+  } else {
+    // Liste: temiz özet + içerik göstergeleri
+    card.append(el("p", "diary-excerpt", metinOzet(g.metin)));
 
-  if (!detay) {
+    const gosterge = [];
+    if (/```/.test(g.metin)) gosterge.push("💻 kod");
+    if (g.video) gosterge.push("🎬 video");
+    if (g.resimler && g.resimler.length) gosterge.push(`📷 ${g.resimler.length} fotoğraf`);
+    if (gosterge.length) card.append(el("div", "diary-badges", gosterge.join("  ·  ")));
+
     card.append(el("div", "post-more", "Devamını oku →"));
     card.addEventListener("click", () => acKayit(g)); // içeriğe tıkla → ana içerik
   }
 
   return card;
+}
+
+// Liste özetı: kod bloklarını çıkarır, tek satıra indirir, 180 karakterde "…" ile keser
+function metinOzet(metin) {
+  const duz = (metin || "").replace(/```[\s\S]*?```/g, " ").replace(/\s+/g, " ").trim();
+  return duz.length > 180 ? duz.slice(0, 180).trimEnd() + "…" : duz;
 }
 
 renderDiary();
