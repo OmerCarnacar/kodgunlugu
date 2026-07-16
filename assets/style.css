@@ -677,6 +677,29 @@ a.cert-card .cert-verify { color: var(--accent-2); }
 
 .diary-empty { color: var(--text-dim); font-style: italic; }
 
+/* Detay (ana içerik) görünümü */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 7px 16px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.diary-card.detail { cursor: default; border-bottom: none; padding-top: 4px; }
+.diary-card.detail .diary-title-big { font-size: clamp(1.3rem, 3vw, 1.7rem); }
+.diary-card.detail:hover .diary-title-big { color: var(--text); }
+
 .diary-list { display: flex; flex-direction: column; gap: 4px; }
 
 .diary-month {

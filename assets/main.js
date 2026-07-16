@@ -212,6 +212,7 @@ function kategoriEtiket(k) {
 const dl = document.getElementById("diary-list");
 const filterBar = document.getElementById("category-filter");
 let aktifKategori = "tumu";
+let aktifKayit = null; // null = liste; sayı = detayda gösterilen kaydın sırası
 
 // Sadece içinde kayıt olan kategoriler filtre olarak gösterilir
 const doluKategoriler = kategoriler.filter((k) => kayitlar.some((g) => g.kategori === k));
@@ -222,6 +223,7 @@ if (filterBar) ["tumu", ...doluKategoriler].forEach((k) => {
   if (k === aktifKategori) btn.classList.add("active");
   btn.addEventListener("click", () => {
     aktifKategori = k;
+    aktifKayit = null; // filtre seçilince listeye dön
     filterBar.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
     btn.classList.add("active");
     renderDiary();
@@ -234,6 +236,7 @@ const searchInput = document.getElementById("diary-search");
 let arama = "";
 if (searchInput) searchInput.addEventListener("input", () => {
   arama = searchInput.value.trim().toLocaleLowerCase("tr");
+  aktifKayit = null; // arama yapılınca listeye dön
   renderDiary();
 });
 
@@ -318,20 +321,7 @@ function renderPopular() {
       el("span", "dn-title", `${g.ruh ? g.ruh + " " : ""}${baslik}`),
       el("span", "dn-date", `${n} okunma · ${kategoriEtiket(g.kategori || "")}`)
     );
-    btn.addEventListener("click", () => {
-      // Filtre/aramayı sıfırla ki kayıt kesin görünsün
-      aktifKategori = "tumu";
-      if (searchInput) searchInput.value = "";
-      arama = "";
-      if (filterBar) {
-        filterBar.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
-        const t = filterBar.querySelector('[data-kategori="tumu"]');
-        if (t) t.classList.add("active");
-      }
-      renderDiary();
-      const hedef = document.getElementById(`kayit-${kayitlar.indexOf(g)}`);
-      if (hedef) { hedef.scrollIntoView({ behavior: "smooth", block: "start" }); hedef.classList.add("open"); }
-    });
+    btn.addEventListener("click", () => acKayit(g)); // içeriğe tıkla → ana içerik
     li.append(btn);
     popularList.append(li);
   });
@@ -390,10 +380,7 @@ function renderDiary() {
         el("span", "dn-date", `${d.getDate()} ${AYLAR[d.getMonth()]}`)
       );
       navBtn.addEventListener("click", () => {
-        const hedef = document.getElementById(`kayit-${kayitlar.indexOf(g)}`);
-        hedef.scrollIntoView({ behavior: "smooth", block: "start" });
-        if (!hedef.classList.contains("open")) okunmaArtir(g); // ilk açılışta say
-        hedef.classList.add("open");
+        acKayit(g); // içeriğe tıkla → ana içerik
         navList.querySelectorAll(".diary-nav-item").forEach((x) => x.classList.remove("active"));
         navBtn.classList.add("active");
       });
@@ -404,116 +391,135 @@ function renderDiary() {
     navList.append(li);
   });
 
+  // ---- Sağ taraf: detay (ana içerik) ya da liste ----
+  if (aktifKayit !== null) {
+    const g = kayitlar[aktifKayit];
+    const geri = el("button", "back-btn", "← Tüm kayıtlar");
+    geri.addEventListener("click", kapatKayit);
+    dl.append(geri, kartOlustur(g, true));
+    return;
+  }
+
   secili.forEach((g) => {
     const d = parseTarih(g.tarih);
     const ayBaslik = `${AYLAR[d.getMonth()]} ${d.getFullYear()}`;
-    const baslik = kayitBasligi(g, d);
-    const kayitId = `kayit-${kayitlar.indexOf(g)}`; // sabit: filtreye göre değişmez
 
-    // ---- Sağ: blog yazısı ----
     if (ayBaslik !== sonAyBaslik) {
       dl.append(el("h3", "diary-month", ayBaslik));
       sonAyBaslik = ayBaslik;
     }
 
-    const card = el("article", "diary-card");
-    card.id = kayitId;
-
-    const head = el("header", "diary-head");
-    const h = el("h3", "diary-title-big");
-    if (g.ruh) h.append(el("span", "diary-mood", g.ruh + " "));
-    h.append(document.createTextNode(baslik));
-
-    const dateBox = el("div", "diary-date-right");
-    dateBox.append(
-      el("div", "dd-date", `${d.getDate()} ${AYLAR[d.getMonth()]} ${d.getFullYear()}`),
-      el("div", "dd-day", GUNLER[d.getDay()])
-    );
-    head.append(h, dateBox);
-    card.append(head);
-
-    if (g.kategori) {
-      const meta = el("div", "diary-meta");
-      meta.append(el("span", "tag", kategoriEtiket(g.kategori)));
-      card.append(meta);
-    }
-
-    // ---- Özel içerik: erişim kodu girilene dek kilitli ----
-    const kilitAnahtari = "ozel-" + g.tarih + "-" + (g.baslik || "");
-    const kilitli = g.ozelKod && localStorage.getItem(kilitAnahtari) !== g.ozelKod;
-
-    if (kilitli) {
-      const kutu = el("div", "diary-lock");
-      kutu.append(
-        el("p", "lock-msg", "🔒 Bu kayıt destekçilere özeldir. Erişim kodun varsa gir; yoksa Destek bölümünden kripto ile destek olup e-postayla kodunu iste.")
-      );
-      const satir = el("div", "lock-row");
-      const inp = document.createElement("input");
-      inp.type = "password";
-      inp.placeholder = "Erişim kodu";
-      inp.className = "lock-input";
-      const ac = el("button", "lock-btn", "Aç");
-      const dene = () => {
-        if (inp.value.trim() === g.ozelKod) {
-          localStorage.setItem(kilitAnahtari, g.ozelKod);
-          renderDiary();
-        } else {
-          inp.value = "";
-          inp.placeholder = "Kod yanlış, tekrar dene";
-        }
-      };
-      ac.addEventListener("click", dene);
-      inp.addEventListener("keydown", (e) => { if (e.key === "Enter") dene(); });
-      satir.append(inp, ac);
-      kutu.append(satir);
-      kutu.addEventListener("click", (e) => e.stopPropagation());
-      card.append(kutu);
-      dl.append(card);
-      return; // metin, video ve fotoğraflar gizli kalır
-    }
-
-    const metin = el("div", "diary-text");
-    renderMetin(g.metin, metin);
-    const more = el("div", "post-more", "Devamını oku ↓");
-    card.append(metin);
-
-    // Video / canlı yayın
-    if (g.video) videoEkle(card, g.video, baslik);
-
-    // Günün fotoğrafları — tıklayınca büyür
-    if (g.resimler && g.resimler.length) {
-      const photos = el("div", "diary-photos");
-      g.resimler.forEach((src) => {
-        const img = document.createElement("img");
-        img.className = "diary-photo";
-        img.src = src;
-        img.alt = baslik;
-        img.loading = "lazy";
-        img.addEventListener("click", (e) => {
-          e.stopPropagation(); // kartın aç/kapa davranışını tetiklemesin
-          openLightbox(src, img.alt);
-        });
-        photos.append(img);
-      });
-      card.append(photos);
-    }
-
-    card.append(more);
-
-    // Kısa kayıtlar zaten tam görünür; uzunlar tıklayınca açılır.
-    requestAnimationFrame(() => {
-      if (metin.scrollHeight <= metin.clientHeight + 4) more.remove();
-    });
-
-    card.addEventListener("click", () => {
-      const aciliyor = !card.classList.contains("open");
-      card.classList.toggle("open");
-      more.textContent = card.classList.contains("open") ? "Kapat ↑" : "Devamını oku ↓";
-      if (aciliyor) okunmaArtir(g); // sadece açılışta say
-    });
-
-    dl.append(card);
+    dl.append(kartOlustur(g, false));
   });
+}
+
+// Bir kaydı ana içerik görünümünde açar
+function acKayit(g) {
+  aktifKayit = kayitlar.indexOf(g);
+  okunmaArtir(g);
+  renderDiary();
+  const bolum = document.getElementById("gunluk");
+  if (bolum) bolum.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function kapatKayit() {
+  aktifKayit = null;
+  renderDiary();
+}
+
+// Kayıt kartını üretir. detay=true → tam içerik (ana içerik görünümü),
+// detay=false → listede kısaltılmış önizleme; tıklayınca detaya gider.
+function kartOlustur(g, detay) {
+  const d = parseTarih(g.tarih);
+  const baslik = kayitBasligi(g, d);
+
+  const card = el("article", "diary-card" + (detay ? " open detail" : ""));
+  card.id = `kayit-${kayitlar.indexOf(g)}`;
+
+  const head = el("header", "diary-head");
+  const h = el("h3", "diary-title-big");
+  if (g.ruh) h.append(el("span", "diary-mood", g.ruh + " "));
+  h.append(document.createTextNode(baslik));
+
+  const dateBox = el("div", "diary-date-right");
+  dateBox.append(
+    el("div", "dd-date", `${d.getDate()} ${AYLAR[d.getMonth()]} ${d.getFullYear()}`),
+    el("div", "dd-day", GUNLER[d.getDay()])
+  );
+  head.append(h, dateBox);
+  card.append(head);
+
+  if (g.kategori) {
+    const meta = el("div", "diary-meta");
+    meta.append(el("span", "tag", kategoriEtiket(g.kategori)));
+    card.append(meta);
+  }
+
+  // ---- Özel içerik: erişim kodu girilene dek kilitli ----
+  const kilitAnahtari = "ozel-" + g.tarih + "-" + (g.baslik || "");
+  const kilitli = g.ozelKod && localStorage.getItem(kilitAnahtari) !== g.ozelKod;
+
+  if (kilitli) {
+    const kutu = el("div", "diary-lock");
+    kutu.append(
+      el("p", "lock-msg", "🔒 Bu kayıt destekçilere özeldir. Erişim kodun varsa gir; yoksa Destek bölümünden kripto ile destek olup e-postayla kodunu iste.")
+    );
+    const satir = el("div", "lock-row");
+    const inp = document.createElement("input");
+    inp.type = "password";
+    inp.placeholder = "Erişim kodu";
+    inp.className = "lock-input";
+    const ac = el("button", "lock-btn", "Aç");
+    const dene = () => {
+      if (inp.value.trim() === g.ozelKod) {
+        localStorage.setItem(kilitAnahtari, g.ozelKod);
+        renderDiary();
+      } else {
+        inp.value = "";
+        inp.placeholder = "Kod yanlış, tekrar dene";
+      }
+    };
+    ac.addEventListener("click", dene);
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") dene(); });
+    satir.append(inp, ac);
+    kutu.append(satir);
+    kutu.addEventListener("click", (e) => e.stopPropagation());
+    card.append(kutu);
+    if (!detay) card.addEventListener("click", () => acKayit(g)); // kilitliyken de detaya gidilebilsin
+    return card; // metin, video ve fotoğraflar gizli kalır
+  }
+
+  const metin = el("div", "diary-text");
+  renderMetin(g.metin, metin);
+  card.append(metin);
+
+  // Video / canlı yayın
+  if (g.video) videoEkle(card, g.video, baslik);
+
+  // Günün fotoğrafları — tıklayınca büyür
+  if (g.resimler && g.resimler.length) {
+    const photos = el("div", "diary-photos");
+    g.resimler.forEach((src) => {
+      const img = document.createElement("img");
+      img.className = "diary-photo";
+      img.src = src;
+      img.alt = baslik;
+      img.loading = "lazy";
+      img.addEventListener("click", (e) => {
+        e.stopPropagation(); // kartın tıklamasını tetiklemesin
+        openLightbox(src, img.alt);
+      });
+      photos.append(img);
+    });
+    card.append(photos);
+  }
+
+  if (!detay) {
+    card.append(el("div", "post-more", "Devamını oku →"));
+    card.addEventListener("click", () => acKayit(g)); // içeriğe tıkla → ana içerik
+  }
+
+  return card;
 }
 
 renderDiary();
