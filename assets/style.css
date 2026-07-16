@@ -722,6 +722,55 @@ a.cert-card .cert-verify { color: var(--accent-2); }
 
 .diary-nav-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
 
+/* Kategori grupları */
+.nav-grup { list-style: none; }
+
+.nav-grup-baslik {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  color: var(--text);
+  transition: background 0.15s;
+}
+.nav-grup-baslik:hover { background: var(--accent-soft); }
+
+.nav-grup-ok {
+  color: var(--accent);
+  font-size: 0.7rem;
+  transition: transform 0.15s;
+}
+.nav-grup:not(.open) .nav-grup-ok { transform: rotate(-90deg); }
+
+.nav-grup-ad { font-weight: 700; }
+
+.nav-grup-adet {
+  margin-left: auto;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+
+.nav-grup-liste {
+  list-style: none;
+  margin: 0 0 6px 14px;
+  border-left: 1px solid var(--border);
+  padding-left: 6px;
+  display: none;
+}
+.nav-grup.open .nav-grup-liste { display: block; }
+
 .popular-box {
   padding-bottom: 12px;
   margin-bottom: 12px;

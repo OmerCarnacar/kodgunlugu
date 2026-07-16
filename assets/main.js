@@ -339,29 +339,58 @@ function renderDiary() {
     return;
   }
 
+  // ---- Sol menü: kategoriye göre gruplu konu listesi ----
+  const gruplar = {};
+  secili.forEach((g) => {
+    const k = g.kategori || "diğer";
+    (gruplar[k] = gruplar[k] || []).push(g);
+  });
+
+  [...kategoriler, "diğer"].forEach((k) => {
+    const uyeler = gruplar[k];
+    if (!uyeler || !uyeler.length) return;
+
+    const li = el("li", "nav-grup open"); // varsayılan: açık — kullanıcı hemen görsün
+
+    const grupBtn = el("button", "nav-grup-baslik");
+    grupBtn.append(
+      el("span", "nav-grup-ok", "▾"),
+      el("span", "nav-grup-ad", kategoriEtiket(k)),
+      el("span", "nav-grup-adet", String(uyeler.length))
+    );
+    grupBtn.addEventListener("click", () => li.classList.toggle("open"));
+    li.append(grupBtn);
+
+    const altListe = el("ul", "nav-grup-liste");
+    uyeler.forEach((g) => {
+      const d = parseTarih(g.tarih);
+      const baslik = kayitBasligi(g, d);
+      const altLi = document.createElement("li");
+      const navBtn = el("button", "diary-nav-item");
+      navBtn.append(
+        el("span", "dn-title", `${g.ruh ? g.ruh + " " : ""}${baslik}`),
+        el("span", "dn-date", `${d.getDate()} ${AYLAR[d.getMonth()]}`)
+      );
+      navBtn.addEventListener("click", () => {
+        const hedef = document.getElementById(`kayit-${kayitlar.indexOf(g)}`);
+        hedef.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (!hedef.classList.contains("open")) okunmaArtir(g); // ilk açılışta say
+        hedef.classList.add("open");
+        navList.querySelectorAll(".diary-nav-item").forEach((x) => x.classList.remove("active"));
+        navBtn.classList.add("active");
+      });
+      altLi.append(navBtn);
+      altListe.append(altLi);
+    });
+    li.append(altListe);
+    navList.append(li);
+  });
+
   secili.forEach((g) => {
     const d = parseTarih(g.tarih);
     const ayBaslik = `${AYLAR[d.getMonth()]} ${d.getFullYear()}`;
     const baslik = kayitBasligi(g, d);
     const kayitId = `kayit-${kayitlar.indexOf(g)}`; // sabit: filtreye göre değişmez
-
-    // ---- Sol menü: konu listesi ----
-    const li = document.createElement("li");
-    const navBtn = el("button", "diary-nav-item");
-    navBtn.append(
-      el("span", "dn-title", `${g.ruh ? g.ruh + " " : ""}${baslik}`),
-      el("span", "dn-date", `${d.getDate()} ${AYLAR[d.getMonth()]} · ${g.kategori || ""}`)
-    );
-    navBtn.addEventListener("click", () => {
-      const hedef = document.getElementById(kayitId);
-      hedef.scrollIntoView({ behavior: "smooth", block: "start" });
-      if (!hedef.classList.contains("open")) okunmaArtir(g); // ilk açılışta say
-      hedef.classList.add("open");
-      navList.querySelectorAll(".diary-nav-item").forEach((x) => x.classList.remove("active"));
-      navBtn.classList.add("active");
-    });
-    li.append(navBtn);
-    navList.append(li);
 
     // ---- Sağ: blog yazısı ----
     if (ayBaslik !== sonAyBaslik) {
