@@ -1,0 +1,7 @@
+name = "kodgunlugu-sayac"
+main = "sayac.js"
+compatibility_date = "2026-07-01"
+
+[[kv_namespaces]]
+binding = "OKUNMA"
+id = "da0748d8f50b4c2092461b6952d94dd1"

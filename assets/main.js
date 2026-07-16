@@ -227,22 +227,55 @@ function kayitBasligi(g, d) {
   return g.baslik || `${d.getDate()} ${AYLAR[d.getMonth()]} günlüğü`;
 }
 
-// ---------- Okunma sayacı (bu cihazda) ----------
-// Not: Statik sitede sunucu olmadığı için sayaç tarayıcıda tutulur.
+// ---------- Okunma sayacı (küresel: Cloudflare Worker + KV) ----------
+// Tüm ziyaretçilerin okumaları Worker'da toplanır; Worker'a ulaşılamazsa
+// tarayıcıdaki yerel sayaç yedek olarak kullanılır.
+const SAYAC_URL = "https://kodgunlugu-sayac.omer-carnacar.workers.dev";
+let globalOkunma = null; // Worker'dan gelen sayaçlar; null = henüz yok
+
 function kayitKimlik(g) {
   return g.tarih + "|" + (g.baslik || "");
 }
 function okunmaAl() {
+  if (globalOkunma) return globalOkunma;
   try { return JSON.parse(localStorage.getItem("okunma") || "{}"); }
   catch { return {}; }
 }
 function okunmaArtir(g) {
-  const o = okunmaAl();
   const k = kayitKimlik(g);
-  o[k] = (o[k] || 0) + 1;
-  localStorage.setItem("okunma", JSON.stringify(o));
+
+  // Yerel yedek sayaç
+  try {
+    const o = JSON.parse(localStorage.getItem("okunma") || "{}");
+    o[k] = (o[k] || 0) + 1;
+    localStorage.setItem("okunma", JSON.stringify(o));
+  } catch {}
+
+  // Küresel sayaç
+  fetch(`${SAYAC_URL}/hit?id=${encodeURIComponent(k)}`, { method: "POST" })
+    .then((r) => r.json())
+    .then((v) => {
+      if (v && typeof v.okunma === "number") {
+        globalOkunma = globalOkunma || {};
+        globalOkunma[k] = v.okunma;
+        renderPopular();
+      }
+    })
+    .catch(() => {}); // çevrimdışı/engelli ise sessizce yerelde kal
+
   renderPopular();
 }
+
+// Sayfa açılışında küresel sayaçları çek
+fetch(`${SAYAC_URL}/counts`)
+  .then((r) => r.json())
+  .then((v) => {
+    if (v && typeof v === "object" && !v.hata) {
+      globalOkunma = v;
+      renderPopular();
+    }
+  })
+  .catch(() => {});
 
 // En çok okunan ilk 5 kaydı sol üstte listeler
 function renderPopular() {
