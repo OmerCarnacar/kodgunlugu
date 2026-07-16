@@ -141,6 +141,18 @@ function highlightCode(kod, hedef) {
   if (son < kod.length) hedef.append(kod.slice(son));
 }
 
+// Kod bloğu dil etiketini okunur ada çevirir (csharp → C#)
+const DIL_ADLARI = {
+  sql: "SQL", tsql: "T-SQL", csharp: "C#", cs: "C#", js: "JavaScript",
+  javascript: "JavaScript", ts: "TypeScript", html: "HTML", css: "CSS",
+  json: "JSON", xml: "XML", powershell: "PowerShell", ps: "PowerShell",
+  bat: "BAT", cmd: "CMD", py: "Python", python: "Python", "": "KOD",
+};
+function kodDiliEtiketi(dil) {
+  const d = (dil || "").toLowerCase();
+  return DIL_ADLARI[d] || d.toLocaleUpperCase("tr");
+}
+
 // Düz metin içindeki ![açıklama](img/dosya.jpg) satırlarını resme çevirir
 const SATIR_ICI_RESIM = /!\[([^\]]*)\]\(([^)\s]+)\)/g;
 
@@ -176,7 +188,7 @@ function renderMetin(metin, container) {
     if (duz) duzMetinEkle(duz, container);
 
     if (i + 2 < parcalar.length) {
-      const dil = (parcalar[i + 1] || "kod").toLocaleUpperCase("tr");
+      const dil = kodDiliEtiketi(parcalar[i + 1]);
       const kod = (parcalar[i + 2] || "").replace(/^\n+|\n+$/g, "");
 
       const blok = el("div", "code-block");

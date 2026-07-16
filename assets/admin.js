@@ -145,19 +145,32 @@ function renderForm(deger) {
       btnResim.textContent = "📷 Resim ekle";
       btnResim.addEventListener("click", () => resimSecVeEkle(input));
 
-      const btnKod = document.createElement("button");
-      btnKod.type = "button";
-      btnKod.className = "item-btn";
-      btnKod.textContent = "💻 Kod ekle";
-      btnKod.addEventListener("click", () => {
-        metneEkle(input, "\n```sql\n-- kodunu buraya yaz\n```\n");
+      bar.append(btnResim);
+
+      // Dil kısayolları: tıkla → o dilin kod şablonu imlece eklenir
+      const DILLER = [
+        { ad: "SQL", fence: "sql", yorum: "-- SQL kodunu buraya yaz" },
+        { ad: "C#", fence: "csharp", yorum: "// C# kodunu buraya yaz" },
+        { ad: "JS", fence: "js", yorum: "// JavaScript kodunu buraya yaz" },
+        { ad: "HTML", fence: "html", yorum: "<!-- HTML kodunu buraya yaz -->" },
+        { ad: "PowerShell", fence: "powershell", yorum: "# PowerShell kodunu buraya yaz" },
+      ];
+      DILLER.forEach((d) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "item-btn kod-tag";
+        b.textContent = "💻 " + d.ad;
+        b.addEventListener("click", () => {
+          metneEkle(input, "\n```" + d.fence + "\n" + d.yorum + "\n```\n");
+        });
+        bar.append(b);
       });
 
       const ipucu = document.createElement("span");
       ipucu.className = "editor-hint";
-      ipucu.textContent = "Resim, imlecin olduğu yere eklenir";
+      ipucu.textContent = "İmlecin olduğu yere eklenir";
+      bar.append(ipucu);
 
-      bar.append(btnResim, btnKod, ipucu);
       wrap.append(bar);
     }
 
