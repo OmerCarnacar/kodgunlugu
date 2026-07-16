@@ -141,13 +141,39 @@ function highlightCode(kod, hedef) {
   if (son < kod.length) hedef.append(kod.slice(son));
 }
 
+// Düz metin içindeki ![açıklama](img/dosya.jpg) satırlarını resme çevirir
+const SATIR_ICI_RESIM = /!\[([^\]]*)\]\(([^)\s]+)\)/g;
+
+function duzMetinEkle(text, container) {
+  let son = 0, m;
+  SATIR_ICI_RESIM.lastIndex = 0;
+  while ((m = SATIR_ICI_RESIM.exec(text))) {
+    const once = text.slice(son, m.index).trim();
+    if (once) container.append(el("p", "diary-para", once));
+
+    const img = document.createElement("img");
+    img.className = "diary-inline-img";
+    img.src = m[2];
+    img.alt = m[1] || "günlük fotoğrafı";
+    img.loading = "lazy";
+    img.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openLightbox(img.src, img.alt);
+    });
+    container.append(img);
+    son = m.index + m[0].length;
+  }
+  const kalan = text.slice(son).trim();
+  if (kalan) container.append(el("p", "diary-para", kalan));
+}
+
 // Metni paragraf + kod bloklarına ayırıp DOM olarak üretir
 function renderMetin(metin, container) {
   const parcalar = metin.split(/```(\w*)\n?([\s\S]*?)```/g);
   // split sonucu: [metin, dil, kod, metin, dil, kod, ...]
   for (let i = 0; i < parcalar.length; i += 3) {
     const duz = (parcalar[i] || "").trim();
-    if (duz) container.append(el("p", "diary-para", duz));
+    if (duz) duzMetinEkle(duz, container);
 
     if (i + 2 < parcalar.length) {
       const dil = (parcalar[i + 1] || "kod").toLocaleUpperCase("tr");
@@ -556,7 +582,9 @@ function kartOlustur(g, detay) {
     const gosterge = [];
     if (/```/.test(g.metin)) gosterge.push("💻 kod");
     if (g.video) gosterge.push("🎬 video");
-    if (g.resimler && g.resimler.length) gosterge.push(`📷 ${g.resimler.length} fotoğraf`);
+    const satirIci = (g.metin.match(/!\[[^\]]*\]\([^)]*\)/g) || []).length;
+    const toplamResim = satirIci + ((g.resimler && g.resimler.length) || 0);
+    if (toplamResim) gosterge.push(`📷 ${toplamResim} fotoğraf`);
     if (gosterge.length) card.append(el("div", "diary-badges", gosterge.join("  ·  ")));
 
     card.append(el("div", "post-more", "Devamını oku →"));
@@ -566,9 +594,13 @@ function kartOlustur(g, detay) {
   return card;
 }
 
-// Liste özetı: kod bloklarını çıkarır, tek satıra indirir, 180 karakterde "…" ile keser
+// Liste özetı: kod bloklarını ve resim işaretlerini çıkarır, 180 karakterde "…" ile keser
 function metinOzet(metin) {
-  const duz = (metin || "").replace(/```[\s\S]*?```/g, " ").replace(/\s+/g, " ").trim();
+  const duz = (metin || "")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   return duz.length > 180 ? duz.slice(0, 180).trimEnd() + "…" : duz;
 }
 

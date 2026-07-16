@@ -67,6 +67,7 @@ let aktif = "gunluk";
 let duzenlenen = null; // düzenlenen öğenin index'i, yoksa null
 let kirli = false;
 let dosyaHandle = null;
+let imgKlasoru = null; // img/ klasörünün erişim izni (ilk resimde bir kez seçilir)
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -132,6 +133,34 @@ function renderForm(deger) {
     }
 
     wrap.append(input);
+
+    // Metin alanının altına araç düğmeleri: resim ve kod ekleme
+    if (a.k === "metin") {
+      const bar = document.createElement("div");
+      bar.className = "editor-bar";
+
+      const btnResim = document.createElement("button");
+      btnResim.type = "button";
+      btnResim.className = "item-btn";
+      btnResim.textContent = "📷 Resim ekle";
+      btnResim.addEventListener("click", () => resimSecVeEkle(input));
+
+      const btnKod = document.createElement("button");
+      btnKod.type = "button";
+      btnKod.className = "item-btn";
+      btnKod.textContent = "💻 Kod ekle";
+      btnKod.addEventListener("click", () => {
+        metneEkle(input, "\n```sql\n-- kodunu buraya yaz\n```\n");
+      });
+
+      const ipucu = document.createElement("span");
+      ipucu.className = "editor-hint";
+      ipucu.textContent = "Resim, imlecin olduğu yere eklenir";
+
+      bar.append(btnResim, btnKod, ipucu);
+      wrap.append(bar);
+    }
+
     formFields.append(wrap);
   });
 
@@ -236,6 +265,60 @@ function renderList() {
 function renderPanel() {
   renderForm(duzenlenen === null ? undefined : state[aktif][duzenlenen]);
   renderList();
+}
+
+// ---------- Editör araçları: resim ve kod ekleme ----------
+// İmlecin olduğu yere metin parçası ekler
+function metneEkle(ta, parca) {
+  const bas = ta.selectionStart != null ? ta.selectionStart : ta.value.length;
+  const son = ta.selectionEnd != null ? ta.selectionEnd : bas;
+  ta.value = ta.value.slice(0, bas) + parca + ta.value.slice(son);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = bas + parca.length;
+}
+
+// Dosya adını URL'ye uygun hale getirir: "Foto 1.JPG" → "2026-07-16-foto-1.jpg"
+function guvenliAd(ad) {
+  const tarih = new Date().toISOString().slice(0, 10);
+  const temiz = ad
+    .toLocaleLowerCase("tr")
+    .replace(/[çÇ]/g, "c").replace(/[ğĞ]/g, "g").replace(/[ıİi]/g, "i")
+    .replace(/[öÖ]/g, "o").replace(/[şŞ]/g, "s").replace(/[üÜ]/g, "u")
+    .replace(/[^a-z0-9.]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  return `${tarih}-${temiz}`;
+}
+
+// Resim(ler) seç → img/ klasörüne kopyala → metne ![](img/...) olarak ekle
+async function resimSecVeEkle(textarea) {
+  if (!window.showOpenFilePicker || !window.showDirectoryPicker) {
+    alert("Bu özellik Chrome/Edge gerektirir.\n\nElle eklemek için: resmi img/ klasörüne kopyala, metne şunu yaz:\n![açıklama](img/dosya-adi.jpg)");
+    return;
+  }
+  try {
+    const secilenler = await window.showOpenFilePicker({
+      multiple: true,
+      types: [{ description: "Resimler", accept: { "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"] } }],
+    });
+
+    // İlk kullanımda sitenin img/ klasörünü seçtir
+    if (!imgKlasoru) {
+      alert("Şimdi sitenin img klasörünü seç (D:\\GLOBAL\\My_360\\img). Bir kez seçmen yeterli.");
+      imgKlasoru = await window.showDirectoryPicker({ mode: "readwrite" });
+    }
+
+    for (const fh of secilenler) {
+      const dosya = await fh.getFile();
+      const ad = guvenliAd(dosya.name);
+      const hedef = await imgKlasoru.getFileHandle(ad, { create: true });
+      const w = await hedef.createWritable();
+      await w.write(dosya);
+      await w.close();
+      metneEkle(textarea, `\n![](img/${ad})\n`);
+    }
+    setKirli(true);
+  } catch (e) {
+    if (e.name !== "AbortError") alert("Resim eklenemedi: " + e.message);
+  }
 }
 
 // ---------- Kaydetme ----------
