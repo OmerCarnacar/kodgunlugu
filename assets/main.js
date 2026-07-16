@@ -27,12 +27,30 @@ function updateToggleIcon() {
 }
 
 // ---------- Video / canlı yayın gömme ----------
-// YouTube (watch, youtu.be, live, shorts) ve Kick linklerini oynatıcıya çevirir.
+// YouTube'un her link biçimini tanır: Paylaş düğmesi (youtu.be/ID?si=...),
+// watch?v=, mobil (m.youtube.com), Shorts, canlı yayın (/live/) ve embed.
+// Kick kanal linklerini de oynatıcıya çevirir.
 function videoEmbedUrl(url) {
-  let m = url.match(/(?:youtube\.com\/(?:watch\?v=|live\/|shorts\/|embed\/)|youtu\.be\/)([\w-]{6,})/);
-  if (m) return "https://www.youtube-nocookie.com/embed/" + m[1];
-  m = url.match(/kick\.com\/([\w-]+)/);
-  if (m) return "https://player.kick.com/" + m[1];
+  const YT = "https://www.youtube-nocookie.com/embed/";
+  try {
+    const u = new URL(/^https?:\/\//.test(url) ? url : "https://" + url);
+    const host = u.hostname.replace(/^(www\.|m\.)/, "");
+
+    if (host === "youtu.be") {
+      const id = u.pathname.slice(1).split("/")[0];
+      if (id) return YT + id;
+    }
+    if (host === "youtube.com" || host === "youtube-nocookie.com") {
+      const v = u.searchParams.get("v"); // watch?v=ID (parametre sırası fark etmez)
+      if (v) return YT + v;
+      const m = u.pathname.match(/^\/(?:live|shorts|embed|v)\/([\w-]+)/);
+      if (m) return YT + m[1];
+    }
+    if (host === "kick.com") {
+      const kanal = u.pathname.split("/")[1];
+      if (kanal) return "https://player.kick.com/" + kanal;
+    }
+  } catch {}
   return null;
 }
 
